@@ -2,7 +2,15 @@
 
 This is a project for may and ethan. it will contain maybe multiple word games? but for starts it'll just contain one word game.
 
-##
+## dev?
+
+To run all just run pnpm start.
+
+```sh
+pnpm start
+```
+
+## Brainstorming
 
 1. Word pyramid;
 
