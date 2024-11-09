@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "ts-node ./src/index.ts"
+    "start": "vite-node -w src/index.ts"
   },
   "keywords": [],
   "author": "",
