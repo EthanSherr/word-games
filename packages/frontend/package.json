@@ -1,6 +1,7 @@
 {
   "name": "@word-games/frontend",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,8 +16,11 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "@stylexjs/stylex": "^0.9.3",
+    "vite-plugin-stylex": "^0.13.0",
     "@vitejs/plugin-react": "^4.3.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "@word-games/common": "workspace:*"
   }
 }
