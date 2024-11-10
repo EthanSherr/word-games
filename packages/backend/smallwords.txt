@@ -1,0 +1,5 @@
+abcde
+bcde
+cde
+ed
+d

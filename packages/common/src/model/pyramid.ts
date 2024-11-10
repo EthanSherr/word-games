@@ -4,5 +4,6 @@ export type PyramidCell = {
 };
 
 export type PyramidPrompt = {
+  id: string;
   layers: Array<Array<PyramidCell>>;
 };

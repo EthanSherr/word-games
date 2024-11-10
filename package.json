@@ -4,6 +4,8 @@
     "@trpc/client": "11.0.0-rc.621",
     "@trpc/react-query": "11.0.0-rc.621",
     "@trpc/server": "11.0.0-rc.621",
+    "@types/luxon": "^3.4.2",
+    "luxon": "^3.5.0",
     "magic-string": "^0.30.12",
     "prettier": "^3.3.3",
     "rollup-plugin-node-externals": "^7.1.3",
