@@ -1,24 +1,5 @@
 import fs from "fs/promises";
 
-// BUILD a word graph of things connected by 1 letter difference :)
-type WordNode = {
-  word: string;
-  addRelation: (wordNode: WordNode) => void;
-};
-
-const makeWordNode = (word: string): WordNode => {
-  const relations = new Map<string, WordNode>();
-
-  const addRelation = (wn: WordNode) => {
-    relations.set(wn.word, wn);
-  };
-
-  return {
-    word,
-    addRelation,
-  };
-};
-
 const makeAnagramLookup = () => {
   const anagramMap = new Map<string, Set<string>>();
 
