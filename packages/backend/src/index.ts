@@ -24,9 +24,18 @@ const main = () => {
 
   const port = 4000;
 
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log("server listening to port", port);
   });
+
+  if (import.meta.hot) {
+    import.meta.hot.on("vite:beforeFullReload", () => {
+      server.close();
+    });
+    import.meta.hot.dispose(() => {
+      server.close();
+    });
+  }
 };
 
 main();
