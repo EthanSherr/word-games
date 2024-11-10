@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "vite-node -w src/index.ts",
+    "start": "vite-node -w src/main.ts",
     "offline": "vite-node ./src/offline.ts"
   },
   "keywords": [],
