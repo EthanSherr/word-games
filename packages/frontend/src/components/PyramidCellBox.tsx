@@ -10,50 +10,44 @@ type PyramidCellBoxProps = {
   inputRef: React.RefObject<HTMLInputElement>;
   maxLength: number;
 };
-export const PyramidCellBox = (
-  // { character, editable }: PyramidCell
-  {
-    character,
-    editable,
-    value,
-    onChange,
-    inputRef,
-    maxLength,
-  }: PyramidCellBoxProps,
-) => {
-  // const handleInputChange = (e) => {
-  //   const { maxLength, value, nextElementSibling } = e.target;
-  //   console.log("what is the nextElement sibling: ", nextElementSibling);
-  //   if (value.length >= maxLength && nextElementSibling) {
-  //     nextElementSibling.focus();
-  //   }
-  // };
-
+export const PyramidCellBox = ({
+  character,
+  editable,
+  value,
+  onChange,
+  inputRef,
+  maxLength,
+}: PyramidCellBoxProps) => {
   return (
-    // <div>
-    //   {editable && (
-    //     <input
-    //       {...stylex.props(styles.base, styles.editableDiv)}
-    //       type="text"
-    //       maxLength={1}
-    //       onChange={handleInputChange}
-    //     ></input>
-    //   )}
-    //   {!editable && (
-    //     <div {...stylex.props(styles.base, styles.nonEditableDiv)}>
-    //       {character}
-    //     </div>
-    //   )}
-    // </div>
     <div>
-      <input
-        type="text"
-        value={value}
-        onChange={onChange}
-        maxLength={maxLength}
-        ref={inputRef}
-      ></input>
+      {editable && (
+        <input
+          {...stylex.props(styles.base, styles.editableDiv)}
+          type="text"
+          value={value}
+          onChange={onChange}
+          maxLength={maxLength}
+          ref={inputRef}
+          placeholder="___"
+        ></input>
+      )}
+
+      {!editable && (
+        <div {...stylex.props(styles.base, styles.nonEditableDiv)}>
+          {character}
+        </div>
+      )}
     </div>
+    // <div>
+    //   <input
+    //     {...stylex.props(styles.inputDiv)}
+    //     type="text"
+    //     value={value}
+    //     onChange={onChange}
+    //     maxLength={maxLength}
+    //     ref={inputRef}
+    //   ></input>
+    // </div>
   );
 };
 
@@ -63,6 +57,8 @@ const styles = stylex.create({
     height: "5rem",
     alignContent: "center",
     textAlign: "center",
+    textTransform: "uppercase",
+    border: "1px solid black",
   },
   editableDiv: {
     backgroundColor: tokens.green,
@@ -70,5 +66,9 @@ const styles = stylex.create({
 
   nonEditableDiv: {
     backgroundColor: tokens.red,
+  },
+
+  inputDiv: {
+    textTransform: "uppercase",
   },
 });
