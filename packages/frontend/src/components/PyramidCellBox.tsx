@@ -28,7 +28,7 @@ export const PyramidCellBox = ({
           onChange={onChange}
           maxLength={maxLength}
           ref={inputRef}
-          placeholder="___"
+          placeholder="_"
         ></input>
       )}
 
@@ -38,37 +38,33 @@ export const PyramidCellBox = ({
         </div>
       )}
     </div>
-    // <div>
-    //   <input
-    //     {...stylex.props(styles.inputDiv)}
-    //     type="text"
-    //     value={value}
-    //     onChange={onChange}
-    //     maxLength={maxLength}
-    //     ref={inputRef}
-    //   ></input>
-    // </div>
   );
 };
 
 const styles = stylex.create({
   base: {
+    fontSize: "2rem",
     width: "5rem",
     height: "5rem",
-    alignContent: "center",
-    textAlign: "center",
+    // alignContent: "center",
+    // textAlign: "center",
     textTransform: "uppercase",
-    border: "1px solid black",
+    border: "0px solid black",
+    borderRadius: ".5rem",
+    // gap: "1rem",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   editableDiv: {
     backgroundColor: tokens.green,
+    textAlign: "center",
+    // fontSize: "2rem",
+    // fontWeight: "1srem",
   },
 
   nonEditableDiv: {
     backgroundColor: tokens.red,
-  },
-
-  inputDiv: {
-    textTransform: "uppercase",
+    // fontWeight: "1rem",
   },
 });

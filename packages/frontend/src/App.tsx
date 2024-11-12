@@ -36,7 +36,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>Start editing to see some magic happen :)</h1>
+      {/* <h1>Start editing to see some magic happen :)</h1> */}
       <Pyramid data={data} />
     </div>
   );

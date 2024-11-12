@@ -29,7 +29,7 @@ export const Pyramid = ({ data }: PyramidType) => {
       [
         { character: "", editable: true },
         { character: "", editable: true },
-        { character: "", editable: true },
+        { character: "A", editable: false },
         { character: "", editable: true },
       ],
       [
@@ -96,9 +96,13 @@ export const Pyramid = ({ data }: PyramidType) => {
       e.target.value.length === e.target.maxLength &&
       index < inputRefs[arrIndex].length - 1
     ) {
-      // go to the next empty input
+      // go to the next  input
       for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
-        if (dataArr.layers[arrIndex][index + i].character.length <= 0) {
+        if (
+          //if it is editable , not just it is empty
+          dataArr.layers[arrIndex][index + i].character.length <= 0
+          // dataArr.layers[arrIndex][index + 1].editable
+        ) {
           inputRefs[arrIndex][index + i].current?.focus();
           break;
         }
@@ -115,7 +119,7 @@ export const Pyramid = ({ data }: PyramidType) => {
   };
 
   return (
-    <div>
+    <div {...stylex.props(styles.base)}>
       {dataArr.layers.map((array, arrayIndex) => {
         return (
           <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
@@ -140,10 +144,21 @@ export const Pyramid = ({ data }: PyramidType) => {
 };
 
 const styles = stylex.create({
-  base: { backgroundColor: "red" },
+  base: {
+    // backgroundColor: "red",
+    // margin: "3rem",
+    // marginTop: "10rem",
+    // marginBottom: "10rem",
+    // marginLeft: "5rem",
+    // marginRight: "5rem",
+    // padding: "3rem",
+  },
   pyramidRow: {
+    // backgroundColor: "pink",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    gap: "1rem",
+    margin: "1rem",
   },
 });

@@ -1,8 +1,8 @@
 import * as stylex from "@stylexjs/stylex";
 
 export const tokens = stylex.defineVars({
-  yellow: "#ffe066",
-  red: "#FF918F",
+  yellow: "#FFF7CD",
+  red: "#FF9A9A",
   blue: "#247ba0",
-  green: "#A7ECBC",
+  green: "#CDFFC9",
 });
