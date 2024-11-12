@@ -44,8 +44,12 @@ export const PyramidCellBox = ({
 const styles = stylex.create({
   base: {
     fontSize: "2rem",
-    width: "5rem",
-    height: "5rem",
+    width: "4rem",
+    height: "4rem",
+    // minWidth: "3rem",
+    // minHeight: "3rem",
+    // maxWidth: "5rem",
+    // maxHeight: "5rem",
     // alignContent: "center",
     // textAlign: "center",
     textTransform: "uppercase",

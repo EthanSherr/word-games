@@ -4,6 +4,8 @@ import { PyramidCellBox } from "./PyramidCellBox";
 import { InputBox } from "./InputBox";
 import { useRef, useState } from "react";
 import { InputArr } from "./InputArr";
+import { Button } from "./Button";
+import { tokens } from "../tokens.stylex";
 
 type PyramidType = {
   data: PyramidPrompt;
@@ -119,26 +121,38 @@ export const Pyramid = ({ data }: PyramidType) => {
   };
 
   return (
-    <div {...stylex.props(styles.base)}>
-      {dataArr.layers.map((array, arrayIndex) => {
-        return (
-          <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
-            {array.map((arr, arrIndex) => {
-              return (
-                <PyramidCellBox
-                  editable={arr.editable}
-                  character={arr.character}
-                  key={arrIndex}
-                  value={arr.character}
-                  onChange={(e) => handleInputChange(e, arrayIndex, arrIndex)}
-                  inputRef={inputRefs[arrayIndex][arrIndex]}
-                  maxLength={1}
-                />
-              );
-            })}
-          </div>
-        );
-      })}
+    <div>
+      <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
+
+      <div {...stylex.props(styles.base)}>
+        <div>
+          {dataArr.layers.map((array, arrayIndex) => {
+            return (
+              <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
+                {array.map((arr, arrIndex) => {
+                  return (
+                    <PyramidCellBox
+                      editable={arr.editable}
+                      character={arr.character}
+                      key={arrIndex}
+                      value={arr.character}
+                      onChange={(e) =>
+                        handleInputChange(e, arrayIndex, arrIndex)
+                      }
+                      inputRef={inputRefs[arrayIndex][arrIndex]}
+                      maxLength={1}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+        <div {...stylex.props(styles.buttonsDiv)}>
+          <Button text="clear" bgColor={tokens.yellow} />
+          <Button text="submit" bgColor={tokens.green} />
+        </div>
+      </div>
     </div>
   );
 };
@@ -146,12 +160,9 @@ export const Pyramid = ({ data }: PyramidType) => {
 const styles = stylex.create({
   base: {
     // backgroundColor: "red",
-    // margin: "3rem",
-    // marginTop: "10rem",
-    // marginBottom: "10rem",
-    // marginLeft: "5rem",
-    // marginRight: "5rem",
-    // padding: "3rem",
+    margin: "3rem",
+    minWidth: "20rem",
+    flexWrap: "wrap",
   },
   pyramidRow: {
     // backgroundColor: "pink",
@@ -160,5 +171,23 @@ const styles = stylex.create({
     justifyContent: "center",
     gap: "1rem",
     margin: "1rem",
+  },
+  buttonsDiv: {
+    // backgroundColor: "pink",
+    display: "flex",
+    flexDirection: "column",
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "1rem",
+    marginTop: "4rem",
+  },
+  logo: {
+    // backgroundColor: "pink",
+    fontSize: "3.5rem",
+    fontWeight: "800",
+    textAlign: "center",
+    marginTop: "3rem",
+    color: tokens.yellow,
   },
 });
