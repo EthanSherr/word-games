@@ -21,32 +21,50 @@ export const PyramidCellBox = ({
   maxLength,
   onSelect,
 }: PyramidCellBoxProps) => {
+  console.log("editable: ", editable);
   return (
-    <div>
-      {editable && (
-        <input
-          {...stylex.props(styles.base, styles.editableDiv)}
-          type="text"
-          value={value}
-          onChange={onChange}
-          maxLength={maxLength}
-          ref={inputRef}
-          placeholder="_"
-          // onSelect={onSelect}
-        ></input>
-      )}
+    // <div {...stylex.props(styles.base)}>
+    //   {editable && (
+    //     <input
 
-      {!editable && (
-        <div {...stylex.props(styles.base, styles.nonEditableDiv)}>
-          {character}
-        </div>
-      )}
-    </div>
+    //       {...stylex.props(styles.editableDiv)}
+    //       type="text"
+    //       value={value}
+    //       onChange={onChange}
+    //       maxLength={maxLength}
+    //       ref={inputRef}
+    //       placeholder="_"
+    //       onFocus={(event) => {
+    //         event.target.select();
+    //       }}
+    //     ></input>
+    //   )}
+
+    //   {!editable && (
+    //     <div {...stylex.props(styles.nonEditableDiv)}>{character}</div>
+    //   )}
+    // </div>
+
+    <input
+      disabled={!editable}
+      {...stylex.props(styles.editableDiv)}
+      type="text"
+      value={value}
+      onChange={onChange}
+      maxLength={maxLength}
+      ref={inputRef}
+      placeholder="_"
+      onFocus={(event) => {
+        event.target.select();
+      }}
+    ></input>
   );
 };
 
 const styles = stylex.create({
   base: {
+    backgroundColor: "pink",
+    zoom: "disable",
     fontSize: "2rem",
     width: "4rem",
     height: "4rem",
@@ -69,6 +87,14 @@ const styles = stylex.create({
     textAlign: "center",
     // fontSize: "2rem",
     // fontWeight: "1srem",
+    // width: "100%",
+    // height: "100%",
+    // border: "0px",
+    // borderRadius: ".5rem",
+    // // gap: "1rem",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
   },
 
   nonEditableDiv: {

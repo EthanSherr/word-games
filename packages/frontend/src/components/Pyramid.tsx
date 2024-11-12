@@ -74,7 +74,6 @@ export const Pyramid = ({ data }: PyramidType) => {
     [useRef<HTMLInputElement>(null)],
   ];
 
-  const [deleteFlag, setDeleteFlag] = useState(false);
   const updateDataArr = (
     layerIndex: number,
     itemIndex: number,
@@ -100,22 +99,17 @@ export const Pyramid = ({ data }: PyramidType) => {
     }
   };
 
-  const checkNextInput = (layerIndex: number, itemIndex: number) => {
-    // console.log("FUnction to delete InputChar", layerIndex, itemIndex);
-    // console.log("what is in ", dataArr.layers);
-    if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
-      console.log("Hey It is filled");
-
-      // updateDataArr(layerIndex, itemIndex, "");
-    }
-  };
-
   const onSelectTest = (layerIndex: number, itemIndex: number) => {
-    console.log("on select test", layerIndex, itemIndex);
+    console.log(
+      "on select test - select the content so the user can update it ",
+      layerIndex,
+      itemIndex,
+    );
+
     //check if curSelect is filled then empty it
-    if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
-      updateDataArr(layerIndex, itemIndex, "");
-    }
+    // if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
+    //   updateDataArr(layerIndex, itemIndex, "");
+    // }
   };
 
   const handleInputChange = (
@@ -139,6 +133,8 @@ export const Pyramid = ({ data }: PyramidType) => {
         if (dataArr.layers[arrIndex][index + i].editable) {
           //go to the next one
           inputRefs[arrIndex][index + i].current?.focus();
+          // onSelectTest(arrIndex, index + i);
+
           break;
         }
       }
@@ -154,9 +150,11 @@ export const Pyramid = ({ data }: PyramidType) => {
         if (dataArr.layers[arrIndex + 1][i].editable) {
           //go to the next one
           inputRefs[arrIndex + 1][i].current?.focus();
+          // onSelectTest(arrIndex + 1, i);
           break;
         }
       }
+
       // will not go to the next one if the next layer's first index is not editable
     }
   };
