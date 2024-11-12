@@ -2,7 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 import { PyramidCell, PyramidPrompt } from "@common/src/model/pyramid";
 import { PyramidCellBox } from "./PyramidCellBox";
 import { InputBox } from "./InputBox";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InputArr } from "./InputArr";
 import { Button } from "./Button";
 import { tokens } from "../tokens.stylex";
@@ -35,7 +35,7 @@ export const Pyramid = ({ data }: PyramidType) => {
         { character: "", editable: true },
       ],
       [
-        { character: "", editable: true },
+        { character: "A", editable: false },
         { character: "", editable: true },
 
         { character: "", editable: true },
@@ -47,6 +47,9 @@ export const Pyramid = ({ data }: PyramidType) => {
       [{ character: "A", editable: false }],
     ],
   });
+  // useEffect(() => {
+  //   console.log("USE EFFECT", dataArr);
+  // }, [dataArr]);
 
   const inputRefs = [
     [
@@ -71,20 +74,20 @@ export const Pyramid = ({ data }: PyramidType) => {
     [useRef<HTMLInputElement>(null)],
   ];
 
-  //for array of array
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    arrIndex: number,
-    index: number,
+  const updateDataArr = (
+    layerIndex: number,
+    itemIndex: number,
+    value: string,
   ) => {
-    if (data.layers[arrIndex][index].editable) {
+    //update the array
+    if (dataArr.layers[layerIndex][itemIndex].editable) {
       const updatedLayers = [...dataArr.layers]; // Copy the layers array
-      updatedLayers[arrIndex] = [...updatedLayers[arrIndex]]; // Copy the specific layer
+      updatedLayers[layerIndex] = [...updatedLayers[layerIndex]]; // Copy the specific layer
 
       // Update the character of the specific item
-      updatedLayers[arrIndex][index] = {
-        ...updatedLayers[arrIndex][index],
-        character: e.target.value,
+      updatedLayers[layerIndex][itemIndex] = {
+        ...updatedLayers[layerIndex][itemIndex],
+        character: value.toUpperCase(),
       };
 
       // Update the state with the new layers
@@ -93,19 +96,56 @@ export const Pyramid = ({ data }: PyramidType) => {
         layers: updatedLayers,
       }));
     }
+  };
+  const checkNextInput = (layerIndex: number, itemIndex: number) => {
+    // console.log("FUnction to delete InputChar", layerIndex, itemIndex);
+    // console.log("what is in ", dataArr.layers);
+    if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
+      console.log("Hey It is filled");
 
+      const updatedLayers = [...dataArr.layers]; // Copy the layers array
+      updatedLayers[layerIndex] = [...updatedLayers[layerIndex]]; // Copy the specific layer
+
+      // Update the character of the specific item
+      updatedLayers[layerIndex][itemIndex] = {
+        ...updatedLayers[layerIndex][itemIndex],
+        character: "",
+      };
+
+      // Update the state with the new layers
+      setDataArr((prevState) => ({
+        ...prevState,
+        layers: updatedLayers,
+      }));
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    arrIndex: number,
+    index: number,
+  ) => {
+    updateDataArr(arrIndex, index, e.target.value);
+
+    // go to the next input
+    // 1. check if the current box is filled
+    // 2. not out of bound
     if (
+      //check current target is filled
       e.target.value.length === e.target.maxLength &&
+      // not out of bound
       index < inputRefs[arrIndex].length - 1
     ) {
-      // go to the next  input
+      // go to the next input
       for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
         if (
           //if it is editable , not just it is empty
-          dataArr.layers[arrIndex][index + i].character.length <= 0
-          // dataArr.layers[arrIndex][index + 1].editable
+          // dataArr.layers[arrIndex][index + i].character.length <= 0
+          dataArr.layers[arrIndex][index + i].editable
         ) {
+          //go to the next one
           inputRefs[arrIndex][index + i].current?.focus();
+          // checkNextInput(arrIndex, index + i);
           break;
         }
       }
@@ -117,6 +157,7 @@ export const Pyramid = ({ data }: PyramidType) => {
     ) {
       // console.log("  I AM END OF LINEEEE => GO TO NEXT LINE");
       inputRefs[arrIndex + 1][0].current?.focus();
+      // will not go to the next one if the next layer's first index is not editable
     }
   };
 
@@ -125,7 +166,7 @@ export const Pyramid = ({ data }: PyramidType) => {
       <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
 
       <div {...stylex.props(styles.base)}>
-        <div>
+        <div {...stylex.props(styles.pyramid)}>
           {dataArr.layers.map((array, arrayIndex) => {
             return (
               <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
@@ -149,8 +190,18 @@ export const Pyramid = ({ data }: PyramidType) => {
           })}
         </div>
         <div {...stylex.props(styles.buttonsDiv)}>
-          <Button text="clear" bgColor={tokens.yellow} />
-          <Button text="submit" bgColor={tokens.green} />
+          <Button
+            text="clear"
+            onClickFn={() => {
+              console.log("Cancel is clicked");
+            }}
+          />
+          <Button
+            text="submit"
+            onClickFn={() => {
+              console.log("Submit is clicked");
+            }}
+          />
         </div>
       </div>
     </div>
@@ -189,5 +240,8 @@ const styles = stylex.create({
     textAlign: "center",
     marginTop: "3rem",
     color: tokens.yellow,
+  },
+  pyramid: {
+    // backgroundColor: "pink",
   },
 });
