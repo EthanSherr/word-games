@@ -9,6 +9,8 @@ type PyramidCellBoxProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   maxLength: number;
+
+  onSelect: () => void;
 };
 export const PyramidCellBox = ({
   character,
@@ -17,6 +19,7 @@ export const PyramidCellBox = ({
   onChange,
   inputRef,
   maxLength,
+  onSelect,
 }: PyramidCellBoxProps) => {
   return (
     <div>
@@ -29,6 +32,7 @@ export const PyramidCellBox = ({
           maxLength={maxLength}
           ref={inputRef}
           placeholder="_"
+          // onSelect={onSelect}
         ></input>
       )}
 

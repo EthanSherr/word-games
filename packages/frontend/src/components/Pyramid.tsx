@@ -74,11 +74,13 @@ export const Pyramid = ({ data }: PyramidType) => {
     [useRef<HTMLInputElement>(null)],
   ];
 
+  const [deleteFlag, setDeleteFlag] = useState(false);
   const updateDataArr = (
     layerIndex: number,
     itemIndex: number,
     value: string,
   ) => {
+    console.log("update the dataArr: ", value);
     //update the array
     if (dataArr.layers[layerIndex][itemIndex].editable) {
       const updatedLayers = [...dataArr.layers]; // Copy the layers array
@@ -97,26 +99,22 @@ export const Pyramid = ({ data }: PyramidType) => {
       }));
     }
   };
+
   const checkNextInput = (layerIndex: number, itemIndex: number) => {
     // console.log("FUnction to delete InputChar", layerIndex, itemIndex);
     // console.log("what is in ", dataArr.layers);
     if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
       console.log("Hey It is filled");
 
-      const updatedLayers = [...dataArr.layers]; // Copy the layers array
-      updatedLayers[layerIndex] = [...updatedLayers[layerIndex]]; // Copy the specific layer
+      // updateDataArr(layerIndex, itemIndex, "");
+    }
+  };
 
-      // Update the character of the specific item
-      updatedLayers[layerIndex][itemIndex] = {
-        ...updatedLayers[layerIndex][itemIndex],
-        character: "",
-      };
-
-      // Update the state with the new layers
-      setDataArr((prevState) => ({
-        ...prevState,
-        layers: updatedLayers,
-      }));
+  const onSelectTest = (layerIndex: number, itemIndex: number) => {
+    console.log("on select test", layerIndex, itemIndex);
+    //check if curSelect is filled then empty it
+    if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
+      updateDataArr(layerIndex, itemIndex, "");
     }
   };
 
@@ -125,27 +123,22 @@ export const Pyramid = ({ data }: PyramidType) => {
     arrIndex: number,
     index: number,
   ) => {
+    console.log("handle input change - value: ", e.target.value);
+
     updateDataArr(arrIndex, index, e.target.value);
 
     // go to the next input
     // 1. check if the current box is filled
     // 2. not out of bound
     if (
-      //check current target is filled
       e.target.value.length === e.target.maxLength &&
-      // not out of bound
       index < inputRefs[arrIndex].length - 1
     ) {
       // go to the next input
       for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
-        if (
-          //if it is editable , not just it is empty
-          // dataArr.layers[arrIndex][index + i].character.length <= 0
-          dataArr.layers[arrIndex][index + i].editable
-        ) {
+        if (dataArr.layers[arrIndex][index + i].editable) {
           //go to the next one
           inputRefs[arrIndex][index + i].current?.focus();
-          // checkNextInput(arrIndex, index + i);
           break;
         }
       }
@@ -156,7 +149,14 @@ export const Pyramid = ({ data }: PyramidType) => {
       arrIndex < dataArr.layers.length - 1
     ) {
       // console.log("  I AM END OF LINEEEE => GO TO NEXT LINE");
-      inputRefs[arrIndex + 1][0].current?.focus();
+      // inputRefs[arrIndex + 1][0].current?.focus();
+      for (let i = 0; i < dataArr.layers[arrIndex + 1].length; i++) {
+        if (dataArr.layers[arrIndex + 1][i].editable) {
+          //go to the next one
+          inputRefs[arrIndex + 1][i].current?.focus();
+          break;
+        }
+      }
       // will not go to the next one if the next layer's first index is not editable
     }
   };
@@ -182,6 +182,9 @@ export const Pyramid = ({ data }: PyramidType) => {
                       }
                       inputRef={inputRefs[arrayIndex][arrIndex]}
                       maxLength={1}
+                      onSelect={() => {
+                        onSelectTest(arrayIndex, arrIndex);
+                      }}
                     />
                   );
                 })}
