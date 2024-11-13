@@ -47,9 +47,6 @@ export const Pyramid = ({ data }: PyramidType) => {
       [{ character: "A", editable: false }],
     ],
   });
-  // useEffect(() => {
-  //   console.log("USE EFFECT", dataArr);
-  // }, [dataArr]);
 
   const inputRefs = [
     [
@@ -73,6 +70,29 @@ export const Pyramid = ({ data }: PyramidType) => {
     [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)],
     [useRef<HTMLInputElement>(null)],
   ];
+
+  const clearAllInput = () => {
+    const updatedLayers = [...dataArr.layers]; // Copy the layers array
+
+    for (let i = 0; i < dataArr.layers.length; i++) {
+      updatedLayers[i] = [...updatedLayers[i]]; // Copy the layer i
+      // Update the character of the specific item
+      for (let x = 0; x < dataArr.layers[i].length; x++) {
+        if (dataArr.layers[i][x].editable) {
+          updatedLayers[i][x] = {
+            ...updatedLayers[i][x],
+            character: "",
+          };
+        }
+      }
+    }
+
+    // Update the state with the new layers
+    setDataArr((prevState) => ({
+      ...prevState,
+      layers: updatedLayers,
+    }));
+  };
 
   const updateDataArr = (
     layerIndex: number,
@@ -99,63 +119,38 @@ export const Pyramid = ({ data }: PyramidType) => {
     }
   };
 
-  const onSelectTest = (layerIndex: number, itemIndex: number) => {
-    console.log(
-      "on select test - select the content so the user can update it ",
-      layerIndex,
-      itemIndex,
-    );
-
-    //check if curSelect is filled then empty it
-    // if (dataArr.layers[layerIndex][itemIndex].character.length > 0) {
-    //   updateDataArr(layerIndex, itemIndex, "");
-    // }
-  };
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     arrIndex: number,
-    index: number,
+    itemIndex: number,
   ) => {
-    console.log("handle input change - value: ", e.target.value);
-
-    updateDataArr(arrIndex, index, e.target.value);
+    updateDataArr(arrIndex, itemIndex, e.target.value);
 
     // go to the next input
     // 1. check if the current box is filled
     // 2. not out of bound
     if (
       e.target.value.length === e.target.maxLength &&
-      index < inputRefs[arrIndex].length - 1
+      itemIndex < inputRefs[arrIndex].length - 1
     ) {
-      // go to the next input
       for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
-        if (dataArr.layers[arrIndex][index + i].editable) {
-          //go to the next one
-          inputRefs[arrIndex][index + i].current?.focus();
-          // onSelectTest(arrIndex, index + i);
-
+        if (dataArr.layers[arrIndex][itemIndex + i].editable) {
+          inputRefs[arrIndex][itemIndex + i].current?.focus();
           break;
         }
       }
     } else if (
-      index == inputRefs[arrIndex].length - 1 &&
+      itemIndex == inputRefs[arrIndex].length - 1 &&
+      arrIndex < dataArr.layers.length - 1 &&
       (e.target.value.length === e.target.maxLength ||
-        dataArr.layers[arrIndex][index].character.length > 0) &&
-      arrIndex < dataArr.layers.length - 1
+        dataArr.layers[arrIndex][itemIndex].character.length > 0)
     ) {
-      // console.log("  I AM END OF LINEEEE => GO TO NEXT LINE");
-      // inputRefs[arrIndex + 1][0].current?.focus();
       for (let i = 0; i < dataArr.layers[arrIndex + 1].length; i++) {
         if (dataArr.layers[arrIndex + 1][i].editable) {
-          //go to the next one
           inputRefs[arrIndex + 1][i].current?.focus();
-          // onSelectTest(arrIndex + 1, i);
           break;
         }
       }
-
-      // will not go to the next one if the next layer's first index is not editable
     }
   };
 
@@ -168,21 +163,16 @@ export const Pyramid = ({ data }: PyramidType) => {
           {dataArr.layers.map((array, arrayIndex) => {
             return (
               <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
-                {array.map((arr, arrIndex) => {
+                {array.map((item, itemIndex) => {
                   return (
                     <PyramidCellBox
-                      editable={arr.editable}
-                      character={arr.character}
-                      key={arrIndex}
-                      value={arr.character}
+                      editable={item.editable}
+                      key={itemIndex}
+                      value={item.character}
                       onChange={(e) =>
-                        handleInputChange(e, arrayIndex, arrIndex)
+                        handleInputChange(e, arrayIndex, itemIndex)
                       }
-                      inputRef={inputRefs[arrayIndex][arrIndex]}
-                      maxLength={1}
-                      onSelect={() => {
-                        onSelectTest(arrayIndex, arrIndex);
-                      }}
+                      inputRef={inputRefs[arrayIndex][itemIndex]}
                     />
                   );
                 })}
@@ -194,7 +184,7 @@ export const Pyramid = ({ data }: PyramidType) => {
           <Button
             text="clear"
             onClickFn={() => {
-              console.log("Cancel is clicked");
+              clearAllInput();
             }}
           />
           <Button
@@ -212,9 +202,15 @@ export const Pyramid = ({ data }: PyramidType) => {
 const styles = stylex.create({
   base: {
     // backgroundColor: "red",
-    margin: "3rem",
+    margin: "2rem",
     minWidth: "20rem",
     flexWrap: "wrap",
+    // height: "100%",
+    // minHeight: "40rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignContent: "center",
   },
   pyramidRow: {
     // backgroundColor: "pink",
@@ -232,15 +228,17 @@ const styles = stylex.create({
     justifyContent: "center",
     alignItems: "center",
     gap: "1rem",
-    marginTop: "4rem",
+    marginTop: "2rem",
   },
   logo: {
     // backgroundColor: "pink",
-    fontSize: "3.5rem",
+    fontSize: "3.2rem",
     fontWeight: "800",
     textAlign: "center",
     marginTop: "3rem",
-    color: tokens.yellow,
+    color: tokens.orange,
+    minWidth: "227px",
+    // display: 'flex'
   },
   pyramid: {
     // backgroundColor: "pink",

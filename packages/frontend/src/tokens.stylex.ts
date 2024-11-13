@@ -5,4 +5,5 @@ export const tokens = stylex.defineVars({
   red: "#FF9A9A",
   blue: "#247ba0",
   green: "#CDFFC9",
+  orange: "#FFAC74",
 });
