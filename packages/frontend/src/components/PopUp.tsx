@@ -24,10 +24,11 @@ const styles = stylex.create({
   base: {
     backgroundColor: "rgba(47,55,100,0.6)",
     zIndex: "1",
-
     position: "absolute",
-    height: "100vh",
-    width: "100vw",
+    // height: "100vh",
+    // width: "100vw",
+    height: "100%",
+    width: "100%",
     left: "0",
     top: "0",
     display: "flex",

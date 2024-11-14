@@ -6,11 +6,12 @@ type ButtonProps = {
   text: string;
   type?: "button" | "reset" | "submit";
   onClickFn: () => void;
+  width?: string;
 };
-export const Button = ({ text, type, onClickFn }: ButtonProps) => {
+export const Button = ({ text, type, onClickFn, width }: ButtonProps) => {
   return (
     <motion.button
-      {...stylex.props(styles.base({ text }))}
+      {...stylex.props(styles.base({ text, width }))}
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.1 }}
       onClick={onClickFn}
@@ -22,11 +23,11 @@ export const Button = ({ text, type, onClickFn }: ButtonProps) => {
 
 const styles = stylex.create({
   base: (props) => ({
-    backgroundColor:
-      props && props.text === "submit" ? tokens.green : tokens.yellow,
+    backgroundColor: props.text === "submit" ? tokens.green : tokens.yellow,
 
-    minWidth: "20rem",
-    width: "80%",
+    minWidth: "10rem",
+    // width: "80%",
+    width: props.width && props.width.length > 0 ? props.width : "80%",
     maxWidth: "40rem",
     fontSize: "2rem",
     height: "5rem",

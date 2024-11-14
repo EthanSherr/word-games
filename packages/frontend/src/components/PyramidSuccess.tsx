@@ -20,10 +20,6 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
           confettiSource={{ x: 100, y: 200, w: 300, h: 200 }}
         />
       </div> */}
-      <div>
-        <p>🎉 Congratulations on solving the puzzle! 🎉</p>
-      </div>
-
       <ConfettiExplosion
         zIndex={1}
         particleCount={250}
@@ -32,8 +28,28 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
         // height="100%"
         width={1500}
       />
+      <div {...stylex.props(styles.textDiv)}>
+        <h2>🎉 Congratulations on solving the puzzle!</h2>
 
-      <Button text="Close" onClickFn={onClickFn} />
+        <p>
+          Would you like to sign up for our daily email with puzzles, tips, and
+          more?
+        </p>
+        <input placeholder="yourname@email."></input>
+
+        {/* <h2>🎉 Congratulations! 🎉</h2> */}
+      </div>
+
+      <div {...stylex.props(styles.buttonContainerDiv)}>
+        <Button text="No" onClickFn={onClickFn} width="40%" />
+        <Button
+          text="Yes!"
+          onClickFn={() => {
+            console.log("Sign up");
+          }}
+          width="40%"
+        />
+      </div>
     </div>
   );
 };
@@ -41,12 +57,11 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
 const styles = stylex.create({
   base: {
     backgroundColor: tokens.orange,
-    width: "60%",
-    height: "20%",
-    minWidth: "30rem",
-    maxWidth: "70%",
-    minHeight: "15rem",
-    maxHeight: "40rem",
+    // width: "100%",
+    // height: "100%",
+    maxWidth: "50rem",
+    // minHeight: "15rem",
+    maxHeight: "50rem",
     // alignSelf: "center",
     // alignItems: "center",
     justifyContent: "center",
@@ -56,7 +71,6 @@ const styles = stylex.create({
     // alignContent: "center",
     borderRadius: "1rem",
     alignItems: "center",
-    // alignSelf: "center",
   },
   confettiDiv: {
     // display: "flex",
@@ -69,8 +83,32 @@ const styles = stylex.create({
     // border: "1px solid #ccc",
   },
   confettiExplosionDiv: {
-    width: "100%",
+    // width: "100%",
     height: "100%",
     backgroundColor: "pink",
+  },
+  textDiv: {
+    backgroundColor: "gray",
+    alignContent: "center",
+    minWidth: "20rem",
+    fontSize: "1rem",
+    margin: "2rem",
+    alignItems: "center",
+    textAlign: "center",
+  },
+  buttonContainerDiv: {
+    backgroundColor: "red",
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    // marginBottom: "10%",
+    gap: "2rem",
+    // marginTop: "6rem",
+    // marginRight: "2rem",
+    // padding: "1rem",
+    margin: "2rem",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
