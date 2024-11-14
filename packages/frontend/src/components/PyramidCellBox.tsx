@@ -15,8 +15,8 @@ export const PyramidCellBox = ({
 }: PyramidCellBoxProps) => {
   return (
     <input
-      disabled={!editable}
       {...stylex.props(styles.input(editable))}
+      disabled={!editable}
       type="text"
       value={value}
       onChange={onChange}

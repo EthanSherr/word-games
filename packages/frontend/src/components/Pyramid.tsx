@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { InputArr } from "./InputArr";
 import { Button } from "./Button";
 import { tokens } from "../tokens.stylex";
+import { PopUp } from "./PopUp";
 
 type PyramidType = {
   data: PyramidPrompt;
@@ -18,7 +19,7 @@ export const Pyramid = ({ data }: PyramidType) => {
   //   ["", ""],
   //   [""],
   // ]);
-
+  const [popUpToggle, setPopUpToggle] = useState(false);
   const [dataArr, setDataArr] = useState({
     layers: [
       [
@@ -191,10 +192,20 @@ export const Pyramid = ({ data }: PyramidType) => {
             text="submit"
             onClickFn={() => {
               console.log("Submit is clicked");
+              // clearAllInput();
+              setPopUpToggle(true);
             }}
           />
         </div>
       </div>
+      {popUpToggle && (
+        <PopUp
+          text="Hi! You clicked the submit button! :)"
+          popUpToggleHandler={() => {
+            setPopUpToggle(false);
+          }}
+        />
+      )}
     </div>
   );
 };
