@@ -1,18 +1,21 @@
 import * as stylex from "@stylexjs/stylex";
 import { tokens } from "../tokens.stylex";
 import { Button } from "./Button";
-
+import { ReactNode } from "react";
 type PopUpProps = {
-  popUpToggleHandler: () => void;
-  text: string;
+  // popUpToggleHandler: () => void;
+  // text: string;
+  children: ReactNode;
 };
-export const PopUp = ({ popUpToggleHandler, text }: PopUpProps) => {
+export const PopUp = ({ children }: PopUpProps) => {
   return (
     <div {...stylex.props(styles.base)}>
-      <div {...stylex.props(styles.centerDiv)}>
-        <div {...stylex.props(styles.text)}>{text}</div>
+      {children}
+
+      {/* <div {...stylex.props(styles.centerDiv)}>
+        <div {...stylex.props(styles.text)}>{text}</div> 
         <Button text="Okay" onClickFn={popUpToggleHandler} />
-      </div>
+      </div> */}
     </div>
   );
 };

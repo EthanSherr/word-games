@@ -7,6 +7,7 @@ import { InputArr } from "./InputArr";
 import { Button } from "./Button";
 import { tokens } from "../tokens.stylex";
 import { PopUp } from "./PopUp";
+import { PyramidSuccess } from "./PyramidSuccess";
 
 type PyramidType = {
   data: PyramidPrompt;
@@ -191,7 +192,9 @@ export const Pyramid = ({ data }: PyramidType) => {
           <Button
             text="submit"
             onClickFn={() => {
-              console.log("Submit is clicked");
+              console.log(
+                "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
+              );
               // clearAllInput();
               setPopUpToggle(true);
             }}
@@ -200,11 +203,26 @@ export const Pyramid = ({ data }: PyramidType) => {
       </div>
       {popUpToggle && (
         <PopUp
-          text="Hi! You clicked the submit button! :)"
-          popUpToggleHandler={() => {
-            setPopUpToggle(false);
-          }}
-        />
+        // text="Hi! You clicked the submit button! :)"
+        // popUpToggleHandler={() => {
+        //   setPopUpToggle(false);
+        // }}
+        >
+          <div>
+            {/* <div {...stylex.props(styles.text)}>Hi you clciked submit</div>
+            <Button
+              text="Okay"
+              onClickFn={() => {
+                setPopUpToggle(false);
+              }}
+            /> */}
+            <PyramidSuccess
+              onClickFn={() => {
+                setPopUpToggle(false);
+              }}
+            />
+          </div>
+        </PopUp>
       )}
     </div>
   );
@@ -253,5 +271,14 @@ const styles = stylex.create({
   },
   pyramid: {
     // backgroundColor: "pink",
+  },
+  text: {
+    margin: "1rem",
+    marginTop: "0rem",
+    // padding: "1rem",
+    fontSize: "2em",
+    color: "black",
+    // backgroundColor: tokens.yellow,
+    textAlign: "center",
   },
 });
