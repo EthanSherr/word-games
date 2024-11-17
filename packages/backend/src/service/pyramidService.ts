@@ -252,14 +252,6 @@ const isPyramidValid = (
     // we must have this word in our subgraph
     // the next word must be related to this word
     if (!relations || !relations.has(nextWord)) {
-      console.log(
-        "searching",
-        currentWord,
-        "relations",
-        [...(relations ?? [])],
-        "for",
-        nextWord,
-      );
       return false;
     }
   }
