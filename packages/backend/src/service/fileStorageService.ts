@@ -55,7 +55,7 @@ export const makeFileStorageService = (rootStorage: string = "./storage") => {
     );
 
     if (stringifyError) {
-      return [stringifyError, null];
+      return [stringifyError, null] as const;
     }
 
     return writeFileStr(file, contents);

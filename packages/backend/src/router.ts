@@ -1,50 +1,51 @@
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import cron from "node-cron";
-import { makePyramidRequestService } from "./service/pyramidRequestService";
-import { makePyramidGeneratorService } from "./service/pyramidGeneratorService";
+import { makePyramidService } from "./service/pyramidService";
 import { DateTime } from "luxon";
 import { metaHotTeardown } from "./metaHotTeardown";
 
 export const makeAppRouter = async () => {
-  const pyramidService = makePyramidRequestService();
-  const pyramidGeneratorService = makePyramidGeneratorService();
-  await pyramidGeneratorService.init();
+  const pyramidService = makePyramidService();
+  await pyramidService.init();
 
   const generate = () => {
     const seed = DateTime.now().toLocaleString();
-    pyramidGeneratorService.generate(seed);
+    pyramidService.generate(seed);
   };
 
   // Generate one now!
   generate();
   // Schedule a daily 9am challenge!
-  const task = cron.schedule("0 9 * * *", generate);
+  const task = cron.schedule("0 9 * * *", () => {
+    const seed = DateTime.now().toLocaleString();
+    pyramidService.generate(seed);
+  });
   metaHotTeardown(() => task.stop());
 
   return router({
-    // example trpc, get user list endpoint
-    userList: publicProcedure.query(async () => {
-      // Retrieve users from a datasource, this is an imaginary database
-      const users = [{ name: "ethan" }];
-      return users;
-    }),
-    // example trpc, get user by id with zod type checking on input
-    userById: publicProcedure.input(z.string()).query(async (opts) => {
-      const { input } = opts; // ts knows that input type is string because zod validation!
+    getPyramidOfTheDay: publicProcedure.query(async () => {
+      const [err, result] = await pyramidService.getPyramidOfTheDay();
 
-      const user = { name: "ethan" };
-      return user;
+      if (err) {
+        throw err;
+      }
+
+      return result;
     }),
-    getPyramidOfTheDay: publicProcedure.query(
-      pyramidService.getPyramidOfTheDay,
-    ),
     submitAnswer: publicProcedure
       // TODO validate the PyramidPrompt - make it a proper zod object
       .input(z.any())
       .mutation(async (opts) => {
         const { input } = opts;
-        return await pyramidService.isValidPyramidSolution(input);
+        const [err, result] =
+          await pyramidService.isValidPyramidSolution(input);
+
+        if (err) {
+          throw err;
+        }
+
+        return result;
       }),
   });
 };
