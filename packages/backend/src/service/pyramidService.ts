@@ -121,8 +121,37 @@ export const makePyramidService = (
       }
     }
 
+    // reduce the subgraph of solutions
+    subgraphOfSolutions.filterRelations((from: string, to: string) => {
+      const layerIdx = startingWord.length - to.length;
+      const layer = pyramidPrompt.layers[layerIdx];
+      if (!layer) return false;
+
+      // non editable cells must not have been changed.
+      for (let cellIdx = 0; cellIdx < layer.length; cellIdx++) {
+        const cell = layer[cellIdx];
+        if (!cell.editable && cell.character != to[cellIdx]) {
+          // this possible solution is not valid because it
+          // doesn't agree on the non-editable characters, so remove it!
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // generate all answers flattened - with non editable characters agreeing from what was generated above.
+    const allSolutionsStartingAtStartWord = flattenGraph(
+      subgraphOfSolutions,
+      startingWord,
+      startingWord.length,
+    );
+
     await store.setCurrentPyramidPrompt(pyramidPrompt);
     await store.setCurrentPyramidSolutions(subgraphOfSolutions);
+    await store.setCurrentPyramidSolutionsDebug(
+      allSolutionsStartingAtStartWord,
+    );
 
     return [
       null,
@@ -271,4 +300,26 @@ const findAllPyramids = (
       ]);
     }
   }
+};
+
+const flattenGraph = (
+  graph: WordRelationGraph,
+  word: string,
+  depth: number,
+  solution: Array<string> = new Array(),
+  allSolutions: Array<Array<string>> = new Array(),
+) => {
+  solution.push(word);
+  if (depth === 1) {
+    allSolutions.push(solution);
+    return allSolutions;
+  }
+
+  const relation = graph.getRelation(word);
+  if (!relation) return allSolutions;
+
+  for (const relatedWord of relation) {
+    flattenGraph(graph, relatedWord, depth - 1, [...solution], allSolutions);
+  }
+  return allSolutions;
 };

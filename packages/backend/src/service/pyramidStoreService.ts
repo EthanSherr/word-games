@@ -21,6 +21,7 @@ const currentPyramidId = "current";
 
 const getPromptFileName = (id: string) => `${id}-prompt.json`;
 const getSolutionsFilename = (id: string) => `${id}-solutions.json`;
+const getSolutionsDebugFilename = (id: string) => `${id}-solutions-debug.json`;
 
 // We store alphabet stuff here
 export const makePyramidStoreService = (
@@ -71,12 +72,22 @@ export const makePyramidStoreService = (
     );
   };
 
+  const setCurrentPyramidSolutionsDebug = async (
+    solutions: Array<Array<string>>,
+  ) => {
+    return fileService.writeFileJson(
+      getSolutionsDebugFilename(currentPyramidId),
+      solutions,
+    );
+  };
+
   return {
     init: fileService.init,
     getCurrentPyramidPrompt,
     getCurrentPyramidSolutions,
     setCurrentPyramidPrompt,
     setCurrentPyramidSolutions,
+    setCurrentPyramidSolutionsDebug,
   };
 };
 export type PyramidStoreService = ReturnType<typeof makePyramidStoreService>;

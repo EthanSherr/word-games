@@ -6,9 +6,25 @@ export const makeWordRelationGraph = (
   const relations = initialRelations ?? new Map<string, Set<string>>();
 
   const addDirectedRelation = (fromWord: string, toWord: string) => {
-    const relation = relations.get(fromWord) ?? new Set<string>();
+    let relation = relations.get(fromWord);
+    if (!relation) {
+      relations.set(fromWord, (relation = new Set<string>()));
+    }
     relation.add(toWord);
-    relations.set(fromWord, relation);
+  };
+
+  const filterRelations = (filterFn: FilterFn) => {
+    const relationsToRemove = new Array<{ from: string; to: string }>();
+    for (const [from, relation] of relations) {
+      for (const to of relation) {
+        if (!filterFn(from, to)) {
+          relationsToRemove.push({ from, to });
+        }
+      }
+    }
+    for (const { from, to } of relationsToRemove) {
+      relations.get(from)?.delete(to);
+    }
   };
 
   const getRelation = (word: string) => relations.get(word);
@@ -39,6 +55,7 @@ export const makeWordRelationGraph = (
 
   return {
     addDirectedRelation,
+    filterRelations,
     getRelation,
     serialize,
     copy,
@@ -55,9 +72,12 @@ export const makeWordRelationGraphFromJson = (data: string) => {
   }
 };
 
+export type FilterFn = (fromWord: string, toWord: string) => boolean;
 export type WordRelationGraph = {
   addDirectedRelation: (fromWord: string, toWord: string) => void;
+  // removeDirectedRelation: (fromWord: string, toWord: string) => void;
   getRelation: (word: string) => Set<string> | undefined;
   serialize: () => string;
   copy: (graph: WordRelationGraph, word: string) => void;
+  filterRelations: (filterFn: FilterFn) => void;
 };
