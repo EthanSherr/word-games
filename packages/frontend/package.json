@@ -1,6 +1,7 @@
 {
   "name": "@word-games/frontend",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,9 +16,15 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "@stylexjs/stylex": "^0.9.3",
     "@word-games/backend": "workspace:*",
     "@vitejs/plugin-react": "^4.3.3",
+    "@word-games/common": "workspace:*",
+    "motion": "^11.11.14",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-confetti": "^6.1.0",
+    "react-confetti-explosion": "^2.1.2",
+    "react-dom": "^18.3.1",
+    "vite-plugin-stylex": "^0.13.0"
   }
 }
