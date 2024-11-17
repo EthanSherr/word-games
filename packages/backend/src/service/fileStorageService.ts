@@ -35,7 +35,7 @@ export const makeFileStorageService = (rootStorage: string = "./storage") => {
 
     const [jsonError, json] = await tryCatch(() => JSON.parse(str));
     if (jsonError) {
-      return [jsonError, null];
+      return [jsonError, null] as const;
     }
 
     return [null, json as Record<any, any>] as const;
