@@ -2,41 +2,20 @@
 import React from "react";
 import "./index.css";
 import { Pyramid } from "./components/Pyramid";
-import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
+import { trpc } from "./connection/TrpcQueryContextProvider";
 
 const App: React.FC = () => {
-  const data: PyramidPrompt = {
-    layers: [
-      [
-        { character: "P", editable: false },
-        { character: "A", editable: false },
-        { character: "S", editable: false },
-        { character: "T", editable: false },
-        { character: "A", editable: false },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-        { character: "", editable: true },
-        { character: "", editable: true },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
+  const { data, isLoading } = trpc.getPyramidOfTheDay.useQuery();
 
-        { character: "", editable: true },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-      ],
-      [{ character: "A", editable: false }],
-    ],
-  };
+  const [trpcError, pyramidDataOfTheDay] = data ?? [];
 
   return (
     <div>
-      <Pyramid data={data} />
+      {pyramidDataOfTheDay ? (
+        <Pyramid pyramidData={pyramidDataOfTheDay} />
+      ) : (
+        "loading"
+      )}
     </div>
   );
 };

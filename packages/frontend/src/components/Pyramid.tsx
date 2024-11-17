@@ -1,54 +1,52 @@
 import * as stylex from "@stylexjs/stylex";
-import { PyramidCell, PyramidPrompt } from "@common/src/model/pyramid";
+import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
 import { PyramidCellBox } from "./PyramidCellBox";
-import { InputBox } from "./InputBox";
-import { useEffect, useRef, useState } from "react";
-import { InputArr } from "./InputArr";
+import { useRef, useState } from "react";
 import { Button } from "./Button";
 import { tokens } from "../tokens.stylex";
 import { PopUp } from "./PopUp";
 import { PyramidSuccess } from "./PyramidSuccess";
+import { trpc } from "../connection/TrpcQueryContextProvider";
 
 type PyramidType = {
-  data: PyramidPrompt;
+  pyramidData: PyramidPrompt;
 };
-export const Pyramid = ({ data }: PyramidType) => {
-  // const [dataArr, setDataArr] = useState<Array<Array<string>>>([
-  //   ["P", "A", "S", "T", "A"],
-  //   ["", "", "", ""],
-  //   ["", "", ""],
-  //   ["", ""],
-  //   [""],
-  // ]);
+export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false);
-  const [dataArr, setDataArr] = useState({
-    layers: [
-      [
-        { character: "P", editable: false },
-        { character: "A", editable: false },
-        { character: "S", editable: false },
-        { character: "T", editable: false },
-        { character: "A", editable: false },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-        { character: "A", editable: false },
-        { character: "", editable: true },
-      ],
-      [
-        { character: "A", editable: false },
-        { character: "", editable: true },
+  const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
 
-        { character: "", editable: true },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-      ],
-      [{ character: "A", editable: false }],
-    ],
-  });
+  const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
+  // const [] = isValidData ?? [];
+  console.log("is Valid data: ", isValidData);
+  // const [pyramidError, setPyramidError] = useState(isValidData);
+  // const [dataArr, setDataArr] = useState({
+  //   layers: [
+  //     [
+  //       { character: "P", editable: false },
+  //       { character: "A", editable: false },
+  //       { character: "S", editable: false },
+  //       { character: "T", editable: false },
+  //       { character: "A", editable: false },
+  //     ],
+  //     [
+  //       { character: "", editable: true },
+  //       { character: "", editable: true },
+  //       { character: "A", editable: false },
+  //       { character: "", editable: true },
+  //     ],
+  //     [
+  //       { character: "A", editable: false },
+  //       { character: "", editable: true },
+
+  //       { character: "", editable: true },
+  //     ],
+  //     [
+  //       { character: "", editable: true },
+  //       { character: "", editable: true },
+  //     ],
+  //     [{ character: "A", editable: false }],
+  //   ],
+  // });
 
   const inputRefs = [
     [
@@ -162,7 +160,7 @@ export const Pyramid = ({ data }: PyramidType) => {
 
       <div {...stylex.props(styles.base)}>
         <div {...stylex.props(styles.pyramid)}>
-          {dataArr.layers.map((array, arrayIndex) => {
+          {dataArr?.layers.map((array, arrayIndex) => {
             return (
               <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
                 {array.map((item, itemIndex) => {
@@ -185,17 +183,20 @@ export const Pyramid = ({ data }: PyramidType) => {
         <div {...stylex.props(styles.buttonsDiv)}>
           <Button
             text="clear"
+            bgColor={tokens.yellow}
             onClickFn={() => {
               clearAllInput();
             }}
           />
           <Button
             text="submit"
+            bgColor={tokens.green}
             onClickFn={() => {
               console.log(
                 "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
               );
               // clearAllInput();
+              // mutate(dataArr);
               setPopUpToggle(true);
             }}
           />
