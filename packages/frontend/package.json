@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.9.3",
+    "@word-games/backend": "workspace:*",
     "@vitejs/plugin-react": "^4.3.3",
     "@word-games/common": "workspace:*",
     "motion": "^11.11.14",
