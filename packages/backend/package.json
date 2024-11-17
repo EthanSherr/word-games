@@ -4,7 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "vite-node -w src/index.ts"
+    "test": "vitest",
+    "start": "vite-node -w src/main.ts",
+    "offline": "vite-node ./src/offline.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,11 @@
   "dependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/seedrandom": "^3.0.8",
     "cors": "^2.8.5",
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "node-cron": "^3.0.3",
+    "seedrandom": "^3.0.5"
   }
 }

@@ -1,9 +1,10 @@
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import cors from "cors";
-import { appRouter } from "./router";
+import { makeAppRouter } from "./router";
 import express from "express";
+import { metaHotTeardown } from "./metaHotTeardown";
 
-const main = () => {
+const main = async () => {
   const app = express();
 
   app.use(
@@ -13,6 +14,9 @@ const main = () => {
       credentials: true, // allows cookies and credentials
     }),
   );
+
+  // make the trpc appRouter - it handles all the requests
+  const appRouter = await makeAppRouter();
 
   app.use(
     "/trpc",
@@ -28,14 +32,7 @@ const main = () => {
     console.log("server listening to port", port);
   });
 
-  if (import.meta.hot) {
-    import.meta.hot.on("vite:beforeFullReload", () => {
-      server.close();
-    });
-    import.meta.hot.dispose(() => {
-      server.close();
-    });
-  }
+  metaHotTeardown(() => server.close());
 };
 
 main();
