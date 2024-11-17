@@ -14,11 +14,11 @@ const makeMockPyramidStore = (): PyramidStoreService => {
       if (!prompt) throw "No Prompt";
       return [null, prompt];
     },
-    getCurrentPyramidSolutions: async () => {
+    getCurrentPyramidSolutionGraph: async () => {
       if (!solutionGraph) throw "No Solution Graph";
       return [null, solutionGraph];
     },
-    setCurrentPyramidSolutions: async (g) => {
+    setCurrentPyramidSolutionSubgraph: async (g) => {
       solutionGraph = g;
       return [null, undefined];
     },

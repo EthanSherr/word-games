@@ -148,7 +148,7 @@ export const makePyramidService = (
     );
 
     await store.setCurrentPyramidPrompt(pyramidPrompt);
-    await store.setCurrentPyramidSolutions(subgraphOfSolutions);
+    await store.setCurrentPyramidSolutionSubgraph(subgraphOfSolutions);
     await store.setCurrentPyramidSolutionsDebug(
       allSolutionsStartingAtStartWord,
     );
@@ -177,7 +177,7 @@ export const makePyramidService = (
 
     // is this actually a valid pyramid answer?
     const [errorGettingSolutions, solutionsGraph] =
-      await store.getCurrentPyramidSolutions();
+      await store.getCurrentPyramidSolutionGraph();
 
     if (errorGettingSolutions) {
       return [errorGettingSolutions, null] as const;
