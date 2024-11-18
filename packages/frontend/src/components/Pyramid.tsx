@@ -15,9 +15,10 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false);
   const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
 
-  const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
+  // const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
   // const [] = isValidData ?? [];
-  console.log("is Valid data: ", isValidData);
+  // console.log("is Valid data: ", isValidData);
+  // setPopUpToggle(isValidData);
   // const [pyramidError, setPyramidError] = useState(isValidData);
   // const [dataArr, setDataArr] = useState({
   //   layers: [
@@ -154,10 +155,9 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     }
   };
 
+  const [shake, setShake] = useState(false);
   return (
     <div>
-      <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
-
       <div {...stylex.props(styles.base)}>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
@@ -173,6 +173,8 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
                         handleInputChange(e, arrayIndex, itemIndex)
                       }
                       inputRef={inputRefs[arrayIndex][itemIndex]}
+                      isShaking={shake}
+                      // sendFnToParent={shakeHandler}
                     />
                   );
                 })}
@@ -194,6 +196,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
             onClickFn={() => {
               console.log(
                 "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
+                dataArr,
               );
               // clearAllInput();
               // mutate(dataArr);
@@ -202,21 +205,10 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           />
         </div>
       </div>
-      {popUpToggle && (
-        <PopUp
-        // text="Hi! You clicked the submit button! :)"
-        // popUpToggleHandler={() => {
-        //   setPopUpToggle(false);
-        // }}
-        >
+      // valid data then pop up
+      {/* {isValidData && popUpToggle && (
+        <PopUp>
           <div>
-            {/* <div {...stylex.props(styles.text)}>Hi you clciked submit</div>
-            <Button
-              text="Okay"
-              onClickFn={() => {
-                setPopUpToggle(false);
-              }}
-            /> */}
             <PyramidSuccess
               onClickFn={() => {
                 setPopUpToggle(false);
@@ -225,6 +217,27 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           </div>
         </PopUp>
       )}
+      // not valid data then pop up
+      {!isValidData && popUpToggle && (
+        <PopUp>
+          <div>
+            <div {...stylex.props(styles.text)}>Hi Your asnwer was wrong</div>
+            <Button
+              text="Okay"
+              onClickFn={() => {
+                clearAllInput();
+                setPopUpToggle(false);
+              }}
+            />
+          </div>
+        </PopUp>
+      )} */}
+      <Button
+        text="shake"
+        onClickFn={() => {
+          setShake(!shake);
+        }}
+      />
     </div>
   );
 };
@@ -260,18 +273,9 @@ const styles = stylex.create({
     gap: "1rem",
     marginTop: "2rem",
   },
-  logo: {
-    // backgroundColor: "pink",
-    fontSize: "3.2rem",
-    fontWeight: "800",
-    textAlign: "center",
-    marginTop: "3rem",
-    color: tokens.orange,
-    minWidth: "227px",
-    // display: 'flex'
-  },
+
   pyramid: {
-    // backgroundColor: "pink",
+    backgroundColor: "pink",
   },
   text: {
     margin: "1rem",
