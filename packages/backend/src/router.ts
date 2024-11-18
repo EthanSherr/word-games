@@ -4,10 +4,14 @@ import cron from "node-cron";
 import { makePyramidService } from "./service/pyramidService";
 import { DateTime } from "luxon";
 import { metaHotTeardown } from "./metaHotTeardown";
+import { makeUserService } from "./service/userService";
 
 export const makeAppRouter = async () => {
   const pyramidService = makePyramidService();
   await pyramidService.init();
+
+  const userService = makeUserService();
+  await userService.init();
 
   const generate = () => {
     const seed = DateTime.now().toLocaleString();
