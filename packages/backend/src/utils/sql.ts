@@ -2,24 +2,29 @@ export function sql(
   strings: TemplateStringsArray,
   ...values: any[]
 ): { query: string; params: any[] } {
-  let params: any[] = [];
-  const query = strings.reduce((acc, str, i) => {
-    if (i < values.length) {
-      const value = values[i];
-      if (Array.isArray(value)) {
-        // Expand arrays into individual placeholders
-        const placeholders = value.map(
-          (_, index) => `$${params.length + index + 1}`,
-        );
-        params = params.concat(value);
-        return `${acc}${str}(${placeholders.join(", ")})`;
-      } else {
-        // Regular substitution
-        params.push(value);
-        return `${acc}${str}$${params.length}`;
+  const params = new Array<any>();
+  const queryComponents = new Array<string | number>();
+  for (let i = 0; i < strings.length; i++) {
+    const str = strings[i];
+    const value = values[i];
+    if (i >= values.length) {
+      queryComponents.push(str);
+    } else if (Array.isArray(value)) {
+      queryComponents.push(str);
+      const arrayComponents = new Array<string>();
+      for (const val of value) {
+        params.push(val);
+        arrayComponents.push(`$${params.length}`);
       }
+      queryComponents.push(`(${arrayComponents.join(", ")})`);
+    } else {
+      params.push(value);
+      queryComponents.push(str, `$${params.length}`);
     }
-    return acc + str;
-  }, "");
-  return { query, params };
+  }
+
+  return {
+    query: queryComponents.join(""),
+    params,
+  };
 }

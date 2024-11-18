@@ -20,6 +20,13 @@ describe("sqliteService", () => {
   beforeEach(async () => {
     sqliteService = makeSqliteService(testDbPath);
 
+    const x = sql`
+    CREATE TABLE users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL
+    );`;
+    console.log("x", x);
     await sqliteService.run(sql`
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
