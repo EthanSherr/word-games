@@ -144,7 +144,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
       // setEmojiPosition({ x: 0, y: 0 });
       setPopUpToggle(false);
       setShake(false);
-    }, 2000);
+    }, 1100);
   };
 
   return (
@@ -281,7 +281,7 @@ const styles = stylex.create({
   },
 
   pyramid: {
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
   },
   text: {
     margin: "1rem",

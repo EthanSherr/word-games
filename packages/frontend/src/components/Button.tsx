@@ -50,5 +50,6 @@ const styles = stylex.create({
     justifyContent: "center",
     color: "black",
     cursor: "pointer",
+    border: "2px solid black",
   }),
 });

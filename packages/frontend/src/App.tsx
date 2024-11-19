@@ -43,7 +43,10 @@ const App: React.FC = () => {
   return (
     <div>
       <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
-      {data ? <Pyramid pyramidData={data} /> : "loading"}
+      <div {...stylex.props(styles.pyramidDiv)}>
+        {" "}
+        {data ? <Pyramid pyramidData={data} /> : "loading"}
+      </div>{" "}
       {/* <Pyramid pyramidData={data} /> */}
     </div>
   );
@@ -53,13 +56,19 @@ export default App;
 
 const styles = stylex.create({
   logo: {
-    // backgroundColor: "pink",
-    fontSize: "3.2rem",
+    width: "100%",
+    fontSize: "3.5rem",
     fontWeight: "800",
     textAlign: "center",
-    marginTop: "3rem",
-    color: tokens.orange,
-    minWidth: "227px",
+    marginTop: "2rem",
+    minWidth: "225px",
+    alignSelf: "center",
+    height: "3.5rem",
+    // backgroundColor: "pink",
     // display: 'flex'
+  },
+  pyramidDiv: {
+    // height: "calc(100% - 6.5rem) ",
+    // backgroundColor: "pink",
   },
 });

@@ -69,14 +69,14 @@ export const PyramidCellBox = ({
 
 const styles = stylex.create({
   input: (editable) => ({
-    backgroundColor: editable === true ? tokens.green : tokens.yellow,
+    backgroundColor: editable === true ? tokens.green : tokens.pink,
     zoom: "disable",
     fontSize: "2rem",
     width: "4rem",
     height: "4rem",
     color: "black",
     textTransform: "uppercase",
-    border: "0px solid black",
+    border: "2px solid black",
     borderRadius: ".5rem",
 
     textAlign: "center",
