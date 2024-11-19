@@ -22,7 +22,7 @@ export const PopUp = ({ children }: PopUpProps) => {
 
 const styles = stylex.create({
   base: {
-    backgroundColor: "rgba(47,55,100,0.6)",
+    backgroundColor: "rgba(47,55,100,0.3)",
     zIndex: "1",
     position: "absolute",
     // height: "100vh",

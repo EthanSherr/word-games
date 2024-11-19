@@ -218,7 +218,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 
       {!isValidData && popUpToggle && (
         <PopUp>
-          <motion.div
+          {/* <motion.div
             style={{
               // position: "absolute",
               // top: emojiPosition.y,
@@ -240,7 +240,8 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           >
             <div {...stylex.props(styles.failEmoji)}>😰</div>
             <div {...stylex.props(styles.failText)}>Try Again</div>
-          </motion.div>
+          </motion.div> */}
+          <PyramidFail />
         </PopUp>
       )}
     </div>
@@ -250,7 +251,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 const styles = stylex.create({
   base: {
     // backgroundColor: "red",
-    margin: "2rem",
+    margin: "1rem",
     minWidth: "20rem",
     flexWrap: "wrap",
     // height: "100%",
