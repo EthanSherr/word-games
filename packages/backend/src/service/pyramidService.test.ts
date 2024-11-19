@@ -14,14 +14,15 @@ const makeMockPyramidStore = (): PyramidStoreService => {
       if (!prompt) throw "No Prompt";
       return [null, prompt];
     },
-    getCurrentPyramidSolutions: async () => {
+    getCurrentPyramidSolutionGraph: async () => {
       if (!solutionGraph) throw "No Solution Graph";
       return [null, solutionGraph];
     },
-    setCurrentPyramidSolutions: async (g) => {
+    setCurrentPyramidSolutionSubgraph: async (g) => {
       solutionGraph = g;
       return [null, undefined];
     },
+    setCurrentPyramidSolutionsDebug: vi.fn(),
     setCurrentPyramidPrompt: async (p) => {
       prompt = p;
       return [null, undefined];
@@ -40,6 +41,7 @@ describe("generate pyramid games", () => {
     expect(err).toBeFalsy();
     expect(result).toBeTruthy();
 
+    console.log(JSON.stringify(result?.solutionPrompt, null, 4));
     const prompt = result!.prompt;
 
     let countRevealedCharacters = 0;

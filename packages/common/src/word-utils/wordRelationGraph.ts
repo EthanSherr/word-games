@@ -6,9 +6,25 @@ export const makeWordRelationGraph = (
   const relations = initialRelations ?? new Map<string, Set<string>>();
 
   const addDirectedRelation = (fromWord: string, toWord: string) => {
-    const relation = relations.get(fromWord) ?? new Set<string>();
+    let relation = relations.get(fromWord);
+    if (!relation) {
+      relations.set(fromWord, (relation = new Set<string>()));
+    }
     relation.add(toWord);
-    relations.set(fromWord, relation);
+  };
+
+  const filterRelations = (filterFn: FilterFn) => {
+    const relationsToRemove = new Array<{ from: string; to: string }>();
+    for (const [from, relation] of relations) {
+      for (const to of relation) {
+        if (!filterFn(from, to)) {
+          relationsToRemove.push({ from, to });
+        }
+      }
+    }
+    for (const { from, to } of relationsToRemove) {
+      relations.get(from)?.delete(to);
+    }
   };
 
   const getRelation = (word: string) => relations.get(word);
@@ -37,11 +53,29 @@ export const makeWordRelationGraph = (
     return JSON.stringify({ relations }, mapSetReplacer, 4);
   };
 
+  const traverse = (
+    currentWord: string,
+    visitFn: (word: string) => boolean,
+    visited: Set<string> = new Set(),
+  ) => {
+    if (visited.has(currentWord)) return;
+    visited.add(currentWord);
+    const continueGoing = visitFn(currentWord);
+    if (!continueGoing) return;
+    const relation = relations.get(currentWord);
+    if (!relation) return;
+    for (const relatedWord of relation) {
+      traverse(relatedWord, visitFn, visited);
+    }
+  };
+
   return {
     addDirectedRelation,
+    filterRelations,
     getRelation,
     serialize,
     copy,
+    traverse,
   };
 };
 
@@ -55,9 +89,15 @@ export const makeWordRelationGraphFromJson = (data: string) => {
   }
 };
 
+export type FilterFn = (fromWord: string, toWord: string) => boolean;
+// visit function returns true to keep going, otherwise if it returns false iteration will stop before relations are pulled in.
+export type VisitFn = (word: string) => boolean;
 export type WordRelationGraph = {
   addDirectedRelation: (fromWord: string, toWord: string) => void;
+  // removeDirectedRelation: (fromWord: string, toWord: string) => void;
   getRelation: (word: string) => Set<string> | undefined;
   serialize: () => string;
   copy: (graph: WordRelationGraph, word: string) => void;
+  filterRelations: (filterFn: FilterFn) => void;
+  traverse: (word: string, visitFn: VisitFn, visited: Set<string>) => void;
 };
