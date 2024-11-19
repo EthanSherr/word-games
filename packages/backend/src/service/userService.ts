@@ -14,11 +14,11 @@ export const makeUserService = (
       );`);
   };
 
-  const signupForNotifications = async (email: string) => {
+  const setReceiveDailyNotification = async (email: string, value: boolean) => {
     // TODO err? have unique constr on email...
     await sqliteService.run(sql`
-      INSERT INTO users (email, receiveDailyNotification)
-      VALUES (${email}, ${true})
+      INSERT OR REPLACE INTO users (email, receiveDailyNotification)
+      VALUES (${email}, ${value});
     `);
   };
 
@@ -35,7 +35,7 @@ export const makeUserService = (
 
   return {
     init,
-    signupForNotifications,
+    setReceiveDailyNotification,
     getAllNotifiableUsers,
   };
 };

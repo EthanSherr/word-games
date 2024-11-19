@@ -51,6 +51,15 @@ export const makeAppRouter = async () => {
 
         return result;
       }),
+    enableNotifyDaily: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async (opts) => {
+        const {
+          input: { email },
+        } = opts;
+
+        await userService.setReceiveDailyNotification(email, true);
+      }),
   });
 };
 
