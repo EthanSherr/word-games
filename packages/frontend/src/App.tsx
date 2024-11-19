@@ -7,44 +7,44 @@ import * as stylex from "@stylexjs/stylex";
 import { tokens } from "./tokens.stylex";
 
 const App: React.FC = () => {
-  // const { data, isLoading } = trpc.getPyramidOfTheDay.useQuery();
+  const { data, isLoading } = trpc.getPyramidOfTheDay.useQuery();
 
   // const [trpcError, pyramidDataOfTheDay] = data ?? [];
-  const data = {
-    id: "test",
-    layers: [
-      [
-        { character: "P", editable: false },
-        { character: "A", editable: false },
-        { character: "S", editable: false },
-        { character: "T", editable: false },
-        { character: "A", editable: false },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-        { character: "A", editable: false },
-        { character: "", editable: true },
-      ],
-      [
-        { character: "A", editable: false },
-        { character: "", editable: true },
+  // const data = {
+  //   id: "test",
+  //   layers: [
+  //     [
+  //       { character: "P", editable: false },
+  //       { character: "A", editable: false },
+  //       { character: "S", editable: false },
+  //       { character: "T", editable: false },
+  //       { character: "A", editable: false },
+  //     ],
+  //     [
+  //       { character: "", editable: true },
+  //       { character: "", editable: true },
+  //       { character: "A", editable: false },
+  //       { character: "", editable: true },
+  //     ],
+  //     [
+  //       { character: "A", editable: false },
+  //       { character: "", editable: true },
 
-        { character: "", editable: true },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-      ],
-      [{ character: "A", editable: false }],
-    ],
-  };
+  //       { character: "", editable: true },
+  //     ],
+  //     [
+  //       { character: "", editable: true },
+  //       { character: "", editable: true },
+  //     ],
+  //     [{ character: "A", editable: false }],
+  //   ],
+  // };
 
   return (
     <div>
       <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
-      {/* {data ? <Pyramid pyramidData={data} /> : "loading"} */}
-      <Pyramid pyramidData={data} />
+      {data ? <Pyramid pyramidData={data} /> : "loading"}
+      {/* <Pyramid pyramidData={data} /> */}
     </div>
   );
 };

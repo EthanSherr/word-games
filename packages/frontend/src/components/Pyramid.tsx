@@ -7,6 +7,8 @@ import { tokens } from "../tokens.stylex";
 import { PopUp } from "./PopUp";
 import { PyramidSuccess } from "./PyramidSuccess";
 import { trpc } from "../connection/TrpcQueryContextProvider";
+import { PyramidFail } from "./PyramidFail";
+import { motion } from "motion/react";
 
 type PyramidType = {
   pyramidData: PyramidPrompt;
@@ -14,40 +16,8 @@ type PyramidType = {
 export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false);
   const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
-
-  // const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
-  // const [] = isValidData ?? [];
-  // console.log("is Valid data: ", isValidData);
-  // setPopUpToggle(isValidData);
-  // const [pyramidError, setPyramidError] = useState(isValidData);
-  // const [dataArr, setDataArr] = useState({
-  //   layers: [
-  //     [
-  //       { character: "P", editable: false },
-  //       { character: "A", editable: false },
-  //       { character: "S", editable: false },
-  //       { character: "T", editable: false },
-  //       { character: "A", editable: false },
-  //     ],
-  //     [
-  //       { character: "", editable: true },
-  //       { character: "", editable: true },
-  //       { character: "A", editable: false },
-  //       { character: "", editable: true },
-  //     ],
-  //     [
-  //       { character: "A", editable: false },
-  //       { character: "", editable: true },
-
-  //       { character: "", editable: true },
-  //     ],
-  //     [
-  //       { character: "", editable: true },
-  //       { character: "", editable: true },
-  //     ],
-  //     [{ character: "A", editable: false }],
-  //   ],
-  // });
+  const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
+  const [trackFails, setTrackFails] = useState(0);
 
   const inputRefs = [
     [
@@ -156,9 +126,39 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   };
 
   const [shake, setShake] = useState(false);
+  const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
+  const [showEmoji, setShowEmoji] = useState(false);
+
+  const handleEmojiPosition = (isCorrectAns: boolean | null | undefined) => {
+    if (isCorrectAns === false) {
+      console.log("ans is not correct: ", showEmoji, emojiPosition);
+      setShowEmoji((prev) => !prev);
+      setEmojiPosition((prev) => ({ x: 350, y: 100 }));
+
+      setTimeout(() => {
+        setShowEmoji(false);
+        setEmojiPosition({ x: 0, y: 0 });
+      }, 1500);
+    }
+  };
+
+  const submitHandler = () => {
+    console.log(
+      "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
+      dataArr,
+    );
+    setPopUpToggle(true);
+
+    if (!isValidData) {
+      setShake(true);
+      // handleEmojiPosition(isValidData);
+    }
+  };
+
   return (
     <div>
       <div {...stylex.props(styles.base)}>
+        <div {...stylex.props(styles.trackFails)}> Fails: {trackFails}</div>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
             return (
@@ -194,19 +194,12 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
             text="submit"
             bgColor={tokens.green}
             onClickFn={() => {
-              console.log(
-                "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
-                dataArr,
-              );
-              // clearAllInput();
-              // mutate(dataArr);
-              setPopUpToggle(true);
+              submitHandler();
             }}
           />
         </div>
       </div>
-      // valid data then pop up
-      {/* {isValidData && popUpToggle && (
+      {isValidData && popUpToggle && (
         <PopUp>
           <div>
             <PyramidSuccess
@@ -217,25 +210,38 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           </div>
         </PopUp>
       )}
-      // not valid data then pop up
-      {!isValidData && popUpToggle && (
+      {/* {!isValidData && popUpToggle && (
         <PopUp>
-          <div>
-            <div {...stylex.props(styles.text)}>Hi Your asnwer was wrong</div>
-            <Button
-              text="Okay"
-              onClickFn={() => {
-                clearAllInput();
-                setPopUpToggle(false);
-              }}
-            />
-          </div>
+          <PyramidFail
+            onClickFn={() => {
+              setPopUpToggle(false);
+              setShake(false);
+              setTrackFails((prevState) => prevState + 1);
+            }}
+          />
         </PopUp>
       )} */}
+
+      {showEmoji && (
+        <motion.div
+          style={{
+            position: "absolute",
+            top: emojiPosition.y,
+            left: emojiPosition.x,
+            fontSize: "10rem",
+            zIndex: "1",
+          }}
+          // animate={{ x: 500, y: 500, opacity: [1, 0] }}
+          animate={{ scale: "0" }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+        >
+          😰
+        </motion.div>
+      )}
       <Button
-        text="shake"
+        text="Emoji TEST"
         onClickFn={() => {
-          setShake(!shake);
+          handleEmojiPosition(false);
         }}
       />
     </div>
@@ -285,5 +291,8 @@ const styles = stylex.create({
     color: "black",
     // backgroundColor: tokens.yellow,
     textAlign: "center",
+  },
+  trackFails: {
+    color: tokens.yellow,
   },
 });

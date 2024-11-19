@@ -24,7 +24,7 @@ export const PyramidCellBox = ({
   const randomY = Math.floor(Math.random() * 10) + 1;
   const randomRotate = Math.floor(Math.random() * 50) + 1;
 
-  console.log("random Rotate: ", randomRotate);
+  // console.log("random Rotate: ", randomRotate);
   const shakeAnimation = {
     shake: {
       rotate: [
@@ -49,7 +49,7 @@ export const PyramidCellBox = ({
 
   return (
     <motion.input
-      animate={isShaking ? "shake" : "initial"}
+      animate={isShaking && editable ? "shake" : "initial"}
       variants={shakeAnimation}
       ref={inputRef}
       // ref={divRef}
