@@ -9,6 +9,8 @@ import { PyramidSuccess } from "./PyramidSuccess";
 import { trpc } from "../connection/TrpcQueryContextProvider";
 import { PyramidFail } from "./PyramidFail";
 import { motion } from "motion/react";
+import { isValid } from "zod";
+import { TrackFails } from "./TrackFails";
 
 type PyramidType = {
   pyramidData: PyramidPrompt;
@@ -18,7 +20,6 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
   const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
   const [trackFails, setTrackFails] = useState(0);
-
   const inputRefs = [
     [
       useRef<HTMLInputElement>(null),
@@ -126,39 +127,32 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   };
 
   const [shake, setShake] = useState(false);
-  const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
-  const [showEmoji, setShowEmoji] = useState(false);
-
-  const handleEmojiPosition = (isCorrectAns: boolean | null | undefined) => {
-    if (isCorrectAns === false) {
-      console.log("ans is not correct: ", showEmoji, emojiPosition);
-      setShowEmoji((prev) => !prev);
-      setEmojiPosition((prev) => ({ x: 350, y: 100 }));
-
-      setTimeout(() => {
-        setShowEmoji(false);
-        setEmojiPosition({ x: 0, y: 0 });
-      }, 1500);
-    }
-  };
+  // const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
 
   const submitHandler = () => {
-    console.log(
-      "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
-      dataArr,
-    );
     setPopUpToggle(true);
 
     if (!isValidData) {
       setShake(true);
-      // handleEmojiPosition(isValidData);
+      // emojiHandler(isValidData);
+      // setEmojiPosition((prev) => ({ x: 350, y: 100 }));
+      setTrackFails((prevState) => prevState + 1);
     }
+
+    setTimeout(() => {
+      //reset everything
+      // setEmojiPosition({ x: 0, y: 0 });
+      setPopUpToggle(false);
+      setShake(false);
+    }, 2000);
   };
 
   return (
     <div>
       <div {...stylex.props(styles.base)}>
-        <div {...stylex.props(styles.trackFails)}> Fails: {trackFails}</div>
+        <div>
+          <TrackFails fails={trackFails} />
+        </div>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
             return (
@@ -222,28 +216,33 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
         </PopUp>
       )} */}
 
-      {showEmoji && (
-        <motion.div
-          style={{
-            position: "absolute",
-            top: emojiPosition.y,
-            left: emojiPosition.x,
-            fontSize: "10rem",
-            zIndex: "1",
-          }}
-          // animate={{ x: 500, y: 500, opacity: [1, 0] }}
-          animate={{ scale: "0" }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-        >
-          😰
-        </motion.div>
+      {!isValidData && popUpToggle && (
+        <PopUp>
+          <motion.div
+            style={{
+              // position: "absolute",
+              // top: emojiPosition.y,
+              // left: emojiPosition.x,
+              fontSize: "10rem",
+              zIndex: "1000",
+              position: "fixed",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            // animate={{ x: 500, y: 500, opacity: [1, 0] }}
+            animate={{ scale: 0, x: 0, y: "-40%" }}
+            // animate={animate ?? { scale: 0, x: 0, y: "-40%" }}
+            transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
+          >
+            <div {...stylex.props(styles.failEmoji)}>😰</div>
+            <div {...stylex.props(styles.failText)}>Try Again</div>
+          </motion.div>
+        </PopUp>
       )}
-      <Button
-        text="Emoji TEST"
-        onClickFn={() => {
-          handleEmojiPosition(false);
-        }}
-      />
     </div>
   );
 };
@@ -294,5 +293,14 @@ const styles = stylex.create({
   },
   trackFails: {
     color: tokens.yellow,
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: tokens.red,
+    alignSelf: "center",
+  },
+  failEmoji: { margin: "0", backgroundColor: "pink" },
+  failText: {
+    fontSize: "3rem",
+    margin: "0",
   },
 });
