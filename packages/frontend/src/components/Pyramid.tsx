@@ -128,10 +128,10 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 
   const [shake, setShake] = useState(false);
   // const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
-
+  const [success, setSuccess] = useState(false);
   const submitHandler = () => {
     setPopUpToggle(true);
-
+    setSuccess(true);
     if (!isValidData) {
       setShake(true);
       // emojiHandler(isValidData);
@@ -144,6 +144,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
       // setEmojiPosition({ x: 0, y: 0 });
       setPopUpToggle(false);
       setShake(false);
+      // setSuccess(false);
     }, 1100);
   };
 
@@ -193,6 +194,17 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           />
         </div>
       </div>
+      {/* {success && popUpToggle && (
+        <PopUp>
+          <div>
+            <PyramidSuccess
+              onClickFn={() => {
+                setPopUpToggle(false);
+              }}
+            />
+          </div>
+        </PopUp>
+      )} */}
       {isValidData && popUpToggle && (
         <PopUp>
           <div>
@@ -218,29 +230,6 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 
       {!isValidData && popUpToggle && (
         <PopUp>
-          {/* <motion.div
-            style={{
-              // position: "absolute",
-              // top: emojiPosition.y,
-              // left: emojiPosition.x,
-              fontSize: "10rem",
-              zIndex: "1000",
-              position: "fixed",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            // animate={{ x: 500, y: 500, opacity: [1, 0] }}
-            animate={{ scale: 0, x: 0, y: "-40%" }}
-            // animate={animate ?? { scale: 0, x: 0, y: "-40%" }}
-            transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
-          >
-            <div {...stylex.props(styles.failEmoji)}>😰</div>
-            <div {...stylex.props(styles.failText)}>Try Again</div>
-          </motion.div> */}
           <PyramidFail />
         </PopUp>
       )}

@@ -48,7 +48,6 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
               <Button
                 text="Yes!"
                 onClickFn={() => {
-                  console.log("Sign up => Need to check for valid email");
                   setTogglePopUp(true);
                 }}
                 bgColor={tokens.green}
@@ -71,7 +70,7 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
               bgColor={tokens.yellow}
               // width="40%"
             />
-          </div>{" "}
+          </div>
         </div>
       )}
     </div>
@@ -80,47 +79,42 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
 
 const styles = stylex.create({
   base: {
-    backgroundColor: tokens.orange,
+    backgroundColor: tokens.pink,
     // width: "100%",
     // height: "100%",
-    maxWidth: "50rem",
+    // maxWidth: "50rem",
+    maxWidth: "90%",
     // minHeight: "15rem",
     maxHeight: "50rem",
     // alignSelf: "center",
     // alignItems: "center",
-    justifyContent: "center",
+    borderRadius: "1rem",
+    border: "2px solid black",
+    boxShadow: "5px 8px",
     display: "flex",
     flexDirection: "column",
-    // justifyItems: "center",
     // alignContent: "center",
-    borderRadius: "1rem",
+    // justifyContent: "center",
     alignItems: "center",
-    // margin: "1rem",
-    // padding: "1rem",
+    // justifyItems: "center",
+    // alignSelf: "center",
+    justifySelf: "center",
   },
   confettiDiv: {
-    // display: "flex",
     backgroundColor: tokens.yellow,
     position: "relative",
     width: "100%",
-    // width: "300px",
     height: "300px",
     overflow: "hidden",
-    // border: "1px solid #ccc",
   },
   confettiExplosionDiv: {
-    // width: "100%",
     height: "100%",
     backgroundColor: "pink",
   },
   textDiv: {
-    // backgroundColor: "gray",
     alignContent: "center",
-    minWidth: "20rem",
+    minWidth: "15rem",
     fontSize: "1rem",
-    // marginLeft: "1rem",
-    // marginRight: "1rem",
-    // marginTop: "1rem",
     margin: "1.5rem",
     marginBottom: "1rem",
     alignItems: "center",
@@ -155,7 +149,7 @@ const styles = stylex.create({
     fontSize: ".8rem",
   },
   input: {
-    backgroundColor: tokens.yellow,
+    backgroundColor: tokens.offwhite,
     zoom: "disable",
     width: "60%",
     minWidth: "18rem",
@@ -164,8 +158,8 @@ const styles = stylex.create({
     // height: "4rem",
     color: "black",
     textTransform: "uppercase",
-    border: "0px solid black",
     borderRadius: ".5rem",
     textAlign: "center",
+    border: "2px solid black",
   },
 });
