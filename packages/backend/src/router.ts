@@ -5,6 +5,7 @@ import { makePyramidService } from "./service/pyramidService";
 import { DateTime } from "luxon";
 import { metaHotTeardown } from "./metaHotTeardown";
 import { makeUserService } from "./service/userService";
+import { makeEmailNotifier } from "./service/emailNotificationService";
 
 export const makeAppRouter = async () => {
   const pyramidService = makePyramidService();
@@ -12,6 +13,8 @@ export const makeAppRouter = async () => {
 
   const userService = makeUserService();
   await userService.init();
+
+  const emailService = makeEmailNotifier();
 
   const generate = () => {
     const seed = DateTime.now().toLocaleString();
