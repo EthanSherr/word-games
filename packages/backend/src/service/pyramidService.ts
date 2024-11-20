@@ -13,12 +13,10 @@ import {
 } from "@word-games/common/src/word-utils/anagramLookup";
 import seedrandom from "seedrandom";
 import { makeWordStoreService, WordStoreService } from "./wordStoreService";
-import { EmailNotifierService, makeEmailNotifier } from "./emailNotificationService";
 
 export const makePyramidService = (
   wordStore: WordStoreService = makeWordStoreService(),
   store: PyramidStoreService = makePyramidStoreService(),
-  email: EmailNotifierService = makeEmailNotifier()
 ) => {
   const init = async () => {
     await store.init();
@@ -154,7 +152,6 @@ export const makePyramidService = (
     await store.setCurrentPyramidSolutionsDebug(
       allSolutionsStartingAtStartWord,
     );
-    await 
 
     return [
       null,

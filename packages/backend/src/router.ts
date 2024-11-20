@@ -18,15 +18,29 @@ export const makeAppRouter = async () => {
 
   const generate = () => {
     const seed = DateTime.now().toLocaleString();
-    pyramidService.generate(seed);
+    return pyramidService.generate(seed);
   };
 
   // Generate one now!
   generate();
   // Schedule a daily 9am challenge!
-  const task = cron.schedule("0 9 * * *", () => {
+  const task = cron.schedule("0 9 * * *", async () => {
+    // This is probably not the right place for this...
+
     const seed = DateTime.now().toLocaleString();
-    pyramidService.generate(seed);
+    const [error] = await pyramidService.generate(seed);
+    if (error) {
+      console.error("error generatating word of day", error);
+      return;
+    }
+    const users = await userService.getAllNotifiableUsers();
+    for (const user of users) {
+      emailService.sendEmail({
+        to: user.email,
+        subject: "New Pyramid Challenge!",
+        text: `We generated a new email challenge for you. Play it here: ${import.meta.env.VITE_FRONTEND_URL}`,
+      });
+    }
   });
   metaHotTeardown(() => task.stop());
 
