@@ -18,8 +18,10 @@ type PyramidType = {
 export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false);
   const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
-  const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
+  const { mutateAsync, data: isValidData } = trpc.submitAnswer.useMutation();
   const [trackFails, setTrackFails] = useState(0);
+  const [shake, setShake] = useState(false);
+
   const inputRefs = [
     [
       useRef<HTMLInputElement>(null),
@@ -71,7 +73,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     itemIndex: number,
     value: string,
   ) => {
-    console.log("update the dataArr: ", value);
+    console.log("update the dataArr with value: ", value);
     //update the array
     if (dataArr.layers[layerIndex][itemIndex].editable) {
       const updatedLayers = [...dataArr.layers]; // Copy the layers array
@@ -89,6 +91,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
         layers: updatedLayers,
       }));
     }
+    console.log("updated array: ", dataArr);
   };
 
   const handleInputChange = (
@@ -126,26 +129,50 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     }
   };
 
-  const [shake, setShake] = useState(false);
-  // const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
-  const [success, setSuccess] = useState(false);
-  const submitHandler = () => {
+  const submitHandler = async () => {
+    console.log("submit array: ", dataArr);
+    const x = await mutateAsync(dataArr);
     setPopUpToggle(true);
-    setSuccess(true);
+
     if (!isValidData) {
       setShake(true);
-      // emojiHandler(isValidData);
-      // setEmojiPosition((prev) => ({ x: 350, y: 100 }));
       setTrackFails((prevState) => prevState + 1);
-    }
 
-    setTimeout(() => {
-      //reset everything
-      // setEmojiPosition({ x: 0, y: 0 });
-      setPopUpToggle(false);
-      setShake(false);
-      // setSuccess(false);
-    }, 1100);
+      setTimeout(() => {
+        //reset everything
+        setPopUpToggle(false);
+        setShake(false);
+      }, 1100);
+    }
+  };
+
+  const backspaceKeyDownHanlder = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    arrayIndex: number,
+    itemIndex: number,
+  ) => {
+    if (
+      event.key.toLowerCase() === "backspace" &&
+      dataArr.layers[arrayIndex][itemIndex].character.length === 0
+    ) {
+      console.log("delete is pressed: ", event.key);
+      //if current input is empty , go to prev one
+      if (dataArr.layers[arrayIndex][itemIndex].character.length === 0) {
+        // inputRefs[arrayIndex][itemIndex - 1].current?.focus();
+        //if it is start of the array
+        if (itemIndex == 0 && arrayIndex !== 0) {
+          const getTheLastItemIndex = inputRefs[arrayIndex - 1].length;
+          if (dataArr.layers[arrayIndex - 1][getTheLastItemIndex].editable) {
+            inputRefs[arrayIndex - 1][getTheLastItemIndex].current?.focus();
+          }
+        }
+      }
+
+      //if current input is not empty, empty it
+      if (dataArr.layers[arrayIndex][itemIndex].character.length === 1) {
+        updateDataArr(arrayIndex, itemIndex, "");
+      }
+    }
   };
 
   return (
@@ -167,6 +194,9 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
                       onChange={(e) =>
                         handleInputChange(e, arrayIndex, itemIndex)
                       }
+                      onKeyDown={(e) => {
+                        backspaceKeyDownHanlder(e, arrayIndex, itemIndex);
+                      }}
                       inputRef={inputRefs[arrayIndex][itemIndex]}
                       isShaking={shake}
                       // sendFnToParent={shakeHandler}

@@ -6,6 +6,8 @@ type PyramidCellBoxProps = {
   editable: boolean;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   isShaking: boolean;
   // sendFnToParent: (fn: () => void) => void;
@@ -16,6 +18,7 @@ export const PyramidCellBox = ({
   editable,
   value,
   onChange,
+  onKeyDown,
   inputRef,
   // sendFnToParent,
   isShaking,
@@ -58,6 +61,7 @@ export const PyramidCellBox = ({
       type="text"
       value={value}
       onChange={onChange}
+      onKeyDown={onKeyDown}
       maxLength={1}
       placeholder="_"
       onFocus={(event) => {
