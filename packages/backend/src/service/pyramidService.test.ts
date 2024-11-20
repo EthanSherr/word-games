@@ -1,6 +1,6 @@
 import { describe, vi, expect, test } from "vitest";
 import { makeWordStoreService } from "./wordStoreService";
-import { makePyramidService, PyramidService } from "./pyramidService";
+import { makePyramidService } from "./pyramidService";
 import { PyramidStoreService } from "./pyramidStoreService";
 import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
 import { WordRelationGraph } from "packages/common/src/word-utils/wordRelationGraph";
