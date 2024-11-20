@@ -7,11 +7,18 @@ type ButtonProps = {
   type?: "button" | "reset" | "submit";
   onClickFn: () => void;
   width?: string;
+  bgColor?: string;
 };
-export const Button = ({ text, type, onClickFn, width }: ButtonProps) => {
+export const Button = ({
+  text,
+  type,
+  onClickFn,
+  width,
+  bgColor,
+}: ButtonProps) => {
   return (
     <motion.button
-      {...stylex.props(styles.base({ text, width }))}
+      {...stylex.props(styles.base({ width, bgColor }))}
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.1 }}
       onClick={onClickFn}
@@ -23,22 +30,26 @@ export const Button = ({ text, type, onClickFn, width }: ButtonProps) => {
 
 const styles = stylex.create({
   base: (props) => ({
-    backgroundColor: props.text === "submit" ? tokens.green : tokens.yellow,
+    // backgroundColor: props.text === "submit" ? tokens.green : tokens.yellow,
+    backgroundColor: props.bgColor,
 
     minWidth: "10rem",
     // width: "80%",
     width: props.width && props.width.length > 0 ? props.width : "80%",
     maxWidth: "40rem",
-    fontSize: "2rem",
-    height: "5rem",
+    fontSize: "2em",
+    // height: "5rem",
+    maxHeight: "5rem",
+    height: "100%",
     textTransform: "uppercase",
     border: "0px solid black",
     borderRadius: ".5rem",
-    padding: "2rem",
+    padding: "1rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     color: "black",
     cursor: "pointer",
+    border: "2px solid black",
   }),
 });

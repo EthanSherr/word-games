@@ -1,55 +1,25 @@
 import * as stylex from "@stylexjs/stylex";
-import { PyramidCell, PyramidPrompt } from "@common/src/model/pyramid";
+import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
 import { PyramidCellBox } from "./PyramidCellBox";
-import { InputBox } from "./InputBox";
-import { useEffect, useRef, useState } from "react";
-import { InputArr } from "./InputArr";
+import { useRef, useState } from "react";
 import { Button } from "./Button";
 import { tokens } from "../tokens.stylex";
 import { PopUp } from "./PopUp";
 import { PyramidSuccess } from "./PyramidSuccess";
+import { trpc } from "../connection/TrpcQueryContextProvider";
+import { PyramidFail } from "./PyramidFail";
+import { motion } from "motion/react";
+import { isValid } from "zod";
+import { TrackFails } from "./TrackFails";
 
 type PyramidType = {
-  data: PyramidPrompt;
+  pyramidData: PyramidPrompt;
 };
-export const Pyramid = ({ data }: PyramidType) => {
-  // const [dataArr, setDataArr] = useState<Array<Array<string>>>([
-  //   ["P", "A", "S", "T", "A"],
-  //   ["", "", "", ""],
-  //   ["", "", ""],
-  //   ["", ""],
-  //   [""],
-  // ]);
+export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false);
-  const [dataArr, setDataArr] = useState({
-    layers: [
-      [
-        { character: "P", editable: false },
-        { character: "A", editable: false },
-        { character: "S", editable: false },
-        { character: "T", editable: false },
-        { character: "A", editable: false },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-        { character: "A", editable: false },
-        { character: "", editable: true },
-      ],
-      [
-        { character: "A", editable: false },
-        { character: "", editable: true },
-
-        { character: "", editable: true },
-      ],
-      [
-        { character: "", editable: true },
-        { character: "", editable: true },
-      ],
-      [{ character: "A", editable: false }],
-    ],
-  });
-
+  const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData);
+  const { mutate, data: isValidData } = trpc.submitAnswer.useMutation();
+  const [trackFails, setTrackFails] = useState(0);
   const inputRefs = [
     [
       useRef<HTMLInputElement>(null),
@@ -156,13 +126,36 @@ export const Pyramid = ({ data }: PyramidType) => {
     }
   };
 
+  const [shake, setShake] = useState(false);
+  // const [emojiPosition, setEmojiPosition] = useState({ x: 0, y: 0 });
+  const [success, setSuccess] = useState(false);
+  const submitHandler = () => {
+    setPopUpToggle(true);
+    setSuccess(true);
+    if (!isValidData) {
+      setShake(true);
+      // emojiHandler(isValidData);
+      // setEmojiPosition((prev) => ({ x: 350, y: 100 }));
+      setTrackFails((prevState) => prevState + 1);
+    }
+
+    setTimeout(() => {
+      //reset everything
+      // setEmojiPosition({ x: 0, y: 0 });
+      setPopUpToggle(false);
+      setShake(false);
+      // setSuccess(false);
+    }, 1100);
+  };
+
   return (
     <div>
-      <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
-
       <div {...stylex.props(styles.base)}>
+        <div>
+          <TrackFails fails={trackFails} />
+        </div>
         <div {...stylex.props(styles.pyramid)}>
-          {dataArr.layers.map((array, arrayIndex) => {
+          {dataArr?.layers.map((array, arrayIndex) => {
             return (
               <div key={arrayIndex} {...stylex.props(styles.pyramidRow)}>
                 {array.map((item, itemIndex) => {
@@ -175,6 +168,8 @@ export const Pyramid = ({ data }: PyramidType) => {
                         handleInputChange(e, arrayIndex, itemIndex)
                       }
                       inputRef={inputRefs[arrayIndex][itemIndex]}
+                      isShaking={shake}
+                      // sendFnToParent={shakeHandler}
                     />
                   );
                 })}
@@ -185,43 +180,57 @@ export const Pyramid = ({ data }: PyramidType) => {
         <div {...stylex.props(styles.buttonsDiv)}>
           <Button
             text="clear"
+            bgColor={tokens.yellow}
             onClickFn={() => {
               clearAllInput();
             }}
           />
           <Button
             text="submit"
+            bgColor={tokens.green}
             onClickFn={() => {
-              console.log(
-                "Submit is clicked => Check if the puzzle is solved! If Solved, success! If not error ",
-              );
-              // clearAllInput();
-              setPopUpToggle(true);
+              submitHandler();
             }}
           />
         </div>
       </div>
-      {popUpToggle && (
-        <PopUp
-        // text="Hi! You clicked the submit button! :)"
-        // popUpToggleHandler={() => {
-        //   setPopUpToggle(false);
-        // }}
-        >
+      {/* {success && popUpToggle && (
+        <PopUp>
           <div>
-            {/* <div {...stylex.props(styles.text)}>Hi you clciked submit</div>
-            <Button
-              text="Okay"
-              onClickFn={() => {
-                setPopUpToggle(false);
-              }}
-            /> */}
             <PyramidSuccess
               onClickFn={() => {
                 setPopUpToggle(false);
               }}
             />
           </div>
+        </PopUp>
+      )} */}
+      {isValidData && popUpToggle && (
+        <PopUp>
+          <div>
+            <PyramidSuccess
+              onClickFn={() => {
+                setPopUpToggle(false);
+              }}
+            />
+          </div>
+        </PopUp>
+      )}
+      {/* {!isValidData && popUpToggle && (
+        <PopUp>
+          <PyramidFail
+            onClickFn={() => {
+              setPopUpToggle(false);
+              setShake(false);
+              setTrackFails((prevState) => prevState + 1);
+            }}
+          />
+        </PopUp>
+      )} */}
+
+      {!isValidData && popUpToggle && (
+        <PopUp>
+          <PyramidFail />
         </PopUp>
       )}
     </div>
@@ -231,7 +240,7 @@ export const Pyramid = ({ data }: PyramidType) => {
 const styles = stylex.create({
   base: {
     // backgroundColor: "red",
-    margin: "2rem",
+    margin: "1rem",
     minWidth: "20rem",
     flexWrap: "wrap",
     // height: "100%",
@@ -259,16 +268,7 @@ const styles = stylex.create({
     gap: "1rem",
     marginTop: "2rem",
   },
-  logo: {
-    // backgroundColor: "pink",
-    fontSize: "3.2rem",
-    fontWeight: "800",
-    textAlign: "center",
-    marginTop: "3rem",
-    color: tokens.orange,
-    minWidth: "227px",
-    // display: 'flex'
-  },
+
   pyramid: {
     // backgroundColor: "pink",
   },
@@ -280,5 +280,17 @@ const styles = stylex.create({
     color: "black",
     // backgroundColor: tokens.yellow,
     textAlign: "center",
+  },
+  trackFails: {
+    color: tokens.yellow,
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: tokens.red,
+    alignSelf: "center",
+  },
+  failEmoji: { margin: "0", backgroundColor: "pink" },
+  failText: {
+    fontSize: "3rem",
+    margin: "0",
   },
 });

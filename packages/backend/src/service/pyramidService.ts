@@ -245,8 +245,8 @@ const isPyramidValid = (
 ) => {
   console.log("isPyramidValid caleld!");
   for (let i = 0; i < pyramidWords.length - 1; i++) {
-    const currentWord = pyramidWords[i];
-    const nextWord = pyramidWords[i + 1];
+    const currentWord = pyramidWords[i].toLowerCase();
+    const nextWord = pyramidWords[i + 1].toLowerCase();
     const relations = solutionsGraph.getRelation(currentWord);
 
     // we must have this word in our subgraph
