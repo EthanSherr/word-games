@@ -73,7 +73,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     itemIndex: number,
     value: string,
   ) => {
-    console.log("update the dataArr with value: ", value);
+    // console.log("update the dataArr with value: ", value);
     //update the array
     if (dataArr.layers[layerIndex][itemIndex].editable) {
       const updatedLayers = [...dataArr.layers]; // Copy the layers array
@@ -91,7 +91,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
         layers: updatedLayers,
       }));
     }
-    console.log("updated array: ", dataArr);
+    // console.log("updated array: ", dataArr);
   };
 
   const handleInputChange = (
@@ -99,31 +99,33 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     arrIndex: number,
     itemIndex: number,
   ) => {
-    updateDataArr(arrIndex, itemIndex, e.target.value);
+    if (e.target.value.length > 0) {
+      updateDataArr(arrIndex, itemIndex, e.target.value);
 
-    // go to the next input
-    // 1. check if the current box is filled
-    // 2. not out of bound
-    if (
-      e.target.value.length === e.target.maxLength &&
-      itemIndex < inputRefs[arrIndex].length - 1
-    ) {
-      for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
-        if (dataArr.layers[arrIndex][itemIndex + i].editable) {
-          inputRefs[arrIndex][itemIndex + i].current?.focus();
-          break;
+      // go to the next input
+      // 1. check if the current box is filled
+      // 2. not out of bound
+      if (
+        e.target.value.length === e.target.maxLength &&
+        itemIndex < inputRefs[arrIndex].length - 1
+      ) {
+        for (let i = 1; i < dataArr.layers[arrIndex].length; i++) {
+          if (dataArr.layers[arrIndex][itemIndex + i].editable) {
+            inputRefs[arrIndex][itemIndex + i].current?.focus();
+            break;
+          }
         }
-      }
-    } else if (
-      itemIndex == inputRefs[arrIndex].length - 1 &&
-      arrIndex < dataArr.layers.length - 1 &&
-      (e.target.value.length === e.target.maxLength ||
-        dataArr.layers[arrIndex][itemIndex].character.length > 0)
-    ) {
-      for (let i = 0; i < dataArr.layers[arrIndex + 1].length; i++) {
-        if (dataArr.layers[arrIndex + 1][i].editable) {
-          inputRefs[arrIndex + 1][i].current?.focus();
-          break;
+      } else if (
+        itemIndex == inputRefs[arrIndex].length - 1 &&
+        arrIndex < dataArr.layers.length - 1 &&
+        (e.target.value.length === e.target.maxLength ||
+          dataArr.layers[arrIndex][itemIndex].character.length > 0)
+      ) {
+        for (let i = 0; i < dataArr.layers[arrIndex + 1].length; i++) {
+          if (dataArr.layers[arrIndex + 1][i].editable) {
+            inputRefs[arrIndex + 1][i].current?.focus();
+            break;
+          }
         }
       }
     }
@@ -131,10 +133,11 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 
   const submitHandler = async () => {
     console.log("submit array: ", dataArr);
-    const x = await mutateAsync(dataArr);
     setPopUpToggle(true);
 
-    if (!isValidData) {
+    const x = await mutateAsync(dataArr);
+
+    if (isValidData === false) {
       setShake(true);
       setTrackFails((prevState) => prevState + 1);
 
@@ -151,26 +154,55 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     arrayIndex: number,
     itemIndex: number,
   ) => {
-    if (
-      event.key.toLowerCase() === "backspace" &&
-      dataArr.layers[arrayIndex][itemIndex].character.length === 0
-    ) {
-      console.log("delete is pressed: ", event.key);
-      //if current input is empty , go to prev one
-      if (dataArr.layers[arrayIndex][itemIndex].character.length === 0) {
-        // inputRefs[arrayIndex][itemIndex - 1].current?.focus();
-        //if it is start of the array
-        if (itemIndex == 0 && arrayIndex !== 0) {
-          const getTheLastItemIndex = inputRefs[arrayIndex - 1].length;
-          if (dataArr.layers[arrayIndex - 1][getTheLastItemIndex].editable) {
-            inputRefs[arrayIndex - 1][getTheLastItemIndex].current?.focus();
+    if (event.key.toLowerCase() === "backspace") {
+      console.log("In delete : delete is pressed: ", event.key);
+      //when delete is pressed and curr item has data , delete it
+      if (
+        dataArr.layers[arrayIndex][itemIndex].character.length > 0 &&
+        dataArr.layers[arrayIndex][itemIndex].editable
+      ) {
+        console.log("In delete : call the update array ");
+        updateDataArr(arrayIndex, itemIndex, "");
+      } else {
+        //if cur index is not the begining and the prev one is editable > go
+        if (itemIndex > 0) {
+          console.log("In delete: go to prev one");
+          for (let i = 1; i < dataArr.layers[arrayIndex].length; i++) {
+            if (dataArr.layers[arrayIndex][itemIndex - i].editable) {
+              inputRefs[arrayIndex][itemIndex - i].current?.focus();
+              break;
+            }
           }
         }
-      }
 
-      //if current input is not empty, empty it
-      if (dataArr.layers[arrayIndex][itemIndex].character.length === 1) {
-        updateDataArr(arrayIndex, itemIndex, "");
+        //if cur index is at the beginning and there are layers above >  go to above layer
+        if (itemIndex == 0 && arrayIndex > 0) {
+          console.log("In delete: go to prev LAYER");
+
+          // for (let i = 1; i < dataArr.layers.length; i++) {
+          const getTheLastIndexOfPrevLayer: number =
+            dataArr.layers[arrayIndex - 1].length;
+          for (let x = 1; x < dataArr.layers[arrayIndex - 1].length; x++) {
+            if (
+              dataArr.layers[arrayIndex - 1][getTheLastIndexOfPrevLayer - x]
+                .editable
+            ) {
+              console.log(
+                "what is arrI : ",
+                arrayIndex - 1,
+                getTheLastIndexOfPrevLayer - x,
+                inputRefs[arrayIndex - 1][getTheLastIndexOfPrevLayer - x],
+              );
+
+              inputRefs[arrayIndex - 1][
+                getTheLastIndexOfPrevLayer - x
+              ].current?.focus();
+
+              break;
+            }
+          }
+        }
+        // }
       }
     }
   };
@@ -224,17 +256,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           />
         </div>
       </div>
-      {/* {success && popUpToggle && (
-        <PopUp>
-          <div>
-            <PyramidSuccess
-              onClickFn={() => {
-                setPopUpToggle(false);
-              }}
-            />
-          </div>
-        </PopUp>
-      )} */}
+
       {isValidData && popUpToggle && (
         <PopUp>
           <div>
@@ -246,19 +268,8 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
           </div>
         </PopUp>
       )}
-      {/* {!isValidData && popUpToggle && (
-        <PopUp>
-          <PyramidFail
-            onClickFn={() => {
-              setPopUpToggle(false);
-              setShake(false);
-              setTrackFails((prevState) => prevState + 1);
-            }}
-          />
-        </PopUp>
-      )} */}
 
-      {!isValidData && popUpToggle && (
+      {isValidData === false && popUpToggle && (
         <PopUp>
           <PyramidFail />
         </PopUp>

@@ -42,7 +42,6 @@ const styles = stylex.create({
     maxHeight: "5rem",
     height: "100%",
     textTransform: "uppercase",
-    border: "0px solid black",
     borderRadius: ".5rem",
     padding: "1rem",
     display: "flex",
@@ -51,5 +50,6 @@ const styles = stylex.create({
     color: "black",
     cursor: "pointer",
     border: "2px solid black",
+    boxShadow: "2px 5px",
   }),
 });
