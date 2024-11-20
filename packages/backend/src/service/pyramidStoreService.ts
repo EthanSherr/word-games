@@ -20,7 +20,8 @@ const savedPath = path.join(storageDirectory, savedDirectory);
 const currentPyramidId = "current";
 
 const getPromptFileName = (id: string) => `${id}-prompt.json`;
-const getSolutionsFilename = (id: string) => `${id}-solutions.json`;
+const getSolutionGraphFilename = (id: string) => `${id}-solution-graph.json`;
+const getSolutionsDebugFilename = (id: string) => `${id}-solutions-debug.json`;
 
 // We store alphabet stuff here
 export const makePyramidStoreService = (
@@ -37,11 +38,11 @@ export const makePyramidStoreService = (
     return [null, json as PyramidPrompt];
   };
 
-  const getPyramidSolutions = async (
+  const getPyramidSolutionGraph = async (
     id: string,
   ): Promise<ErrorType<WordRelationGraph, Error | "ENOENT">> => {
     const [err, str] = await fileService.readFileString(
-      getSolutionsFilename(id),
+      getSolutionGraphFilename(id),
     );
     if (err) {
       return [err, null] as const;
@@ -54,8 +55,8 @@ export const makePyramidStoreService = (
 
   const getCurrentPyramidPrompt = () => getPyramidPrompt(currentPyramidId);
 
-  const getCurrentPyramidSolutions = () =>
-    getPyramidSolutions(currentPyramidId);
+  const getCurrentPyramidSolutionGraph = () =>
+    getPyramidSolutionGraph(currentPyramidId);
 
   const setCurrentPyramidPrompt = async (prompt: PyramidPrompt) => {
     return fileService.writeFileJson(
@@ -64,19 +65,31 @@ export const makePyramidStoreService = (
     );
   };
 
-  const setCurrentPyramidSolutions = async (solutions: WordRelationGraph) => {
+  const setCurrentPyramidSolutionSubgraph = async (
+    solutions: WordRelationGraph,
+  ) => {
     return fileService.writeFileStr(
-      getSolutionsFilename(currentPyramidId),
+      getSolutionGraphFilename(currentPyramidId),
       solutions.serialize(),
+    );
+  };
+
+  const setCurrentPyramidSolutionsDebug = async (
+    solutions: Array<Array<string>>,
+  ) => {
+    return fileService.writeFileJson(
+      getSolutionsDebugFilename(currentPyramidId),
+      solutions,
     );
   };
 
   return {
     init: fileService.init,
     getCurrentPyramidPrompt,
-    getCurrentPyramidSolutions,
+    getCurrentPyramidSolutionGraph,
     setCurrentPyramidPrompt,
-    setCurrentPyramidSolutions,
+    setCurrentPyramidSolutionSubgraph,
+    setCurrentPyramidSolutionsDebug,
   };
 };
 export type PyramidStoreService = ReturnType<typeof makePyramidStoreService>;

@@ -1,6 +1,6 @@
 import { describe, vi, expect, test } from "vitest";
 import { makeWordStoreService } from "./wordStoreService";
-import { makePyramidService, PyramidService } from "./pyramidService";
+import { makePyramidService } from "./pyramidService";
 import { PyramidStoreService } from "./pyramidStoreService";
 import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
 import { WordRelationGraph } from "packages/common/src/word-utils/wordRelationGraph";
@@ -14,14 +14,15 @@ const makeMockPyramidStore = (): PyramidStoreService => {
       if (!prompt) throw "No Prompt";
       return [null, prompt];
     },
-    getCurrentPyramidSolutions: async () => {
+    getCurrentPyramidSolutionGraph: async () => {
       if (!solutionGraph) throw "No Solution Graph";
       return [null, solutionGraph];
     },
-    setCurrentPyramidSolutions: async (g) => {
+    setCurrentPyramidSolutionSubgraph: async (g) => {
       solutionGraph = g;
       return [null, undefined];
     },
+    setCurrentPyramidSolutionsDebug: vi.fn(),
     setCurrentPyramidPrompt: async (p) => {
       prompt = p;
       return [null, undefined];
@@ -40,6 +41,7 @@ describe("generate pyramid games", () => {
     expect(err).toBeFalsy();
     expect(result).toBeTruthy();
 
+    console.log(JSON.stringify(result?.solutionPrompt, null, 4));
     const prompt = result!.prompt;
 
     let countRevealedCharacters = 0;
