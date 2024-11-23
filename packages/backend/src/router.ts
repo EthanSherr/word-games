@@ -77,7 +77,6 @@ export const makeAppRouter = async () => {
         const {
           input: { email, notify },
         } = opts
-
         await userService.setReceiveDailyNotification(email, notify)
       }),
   })
