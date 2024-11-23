@@ -60,7 +60,7 @@ export const makeAppRouter = async () => {
         subject: "New Pyramid Challenge!",
         text:
           `We generated a new email challenge for you. Play it here: ${dailyPyramidUrl}. ` +
-          `You can unsubscribe here ${cancelNotificationUrl}`,
+          `You can unsubscribe to these emails here: ${cancelNotificationUrl}`,
       })
     }
   })
