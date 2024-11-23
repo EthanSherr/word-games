@@ -4,22 +4,50 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // e.g., SSL (465) for secure, (TLS) 587
-  VITE_EMAIL_NOTIFIER_SECURE: z.boolean().optional(),
+  VITE_EMAIL_NOTIFIER_SECURE: z.boolean().default(false),
   // e.g., "smtp.gmail.com" for Gmail
   VITE_EMAIL_NOTIFIER_HOST: z.string(),
   VITE_EMAIL_NOTIFIER_EMAIL: z.string(),
   VITE_EMAIL_NOTIFIER_PASSWORD: z.string(),
 });
 
-export const makeEmailNotifier = () => {
+export const makeEmailNotifierFromEnv = () => {
+  const result = envSchema.safeParse(import.meta.env);
+  if (result.error) {
+    return [result.error, null] as const;
+  }
+
   const {
-    VITE_EMAIL_NOTIFIER_SECURE,
+    VITE_EMAIL_NOTIFIER_SECURE: secure,
     VITE_EMAIL_NOTIFIER_HOST: host,
     VITE_EMAIL_NOTIFIER_EMAIL: user,
     VITE_EMAIL_NOTIFIER_PASSWORD: pass,
-  } = envSchema.parse(import.meta.env);
+  } = result.data;
 
-  const secure = Boolean(VITE_EMAIL_NOTIFIER_SECURE);
+  return [
+    null,
+    makeEmailNotifier({
+      host,
+      user,
+      pass,
+      secure,
+    }),
+  ] as const;
+};
+
+export type EmailNotifierProps = {
+  host: string;
+  user: string;
+  pass: string;
+  secure: boolean;
+};
+
+export const makeEmailNotifier = ({
+  host,
+  user,
+  pass,
+  secure,
+}: EmailNotifierProps) => {
   // 465 secure port, 587 insecure port.
   const PORT = secure ? 465 : 587;
 
@@ -61,4 +89,4 @@ export type EmailOptions = {
   html?: string;
 };
 
-export type EmailNotifierService = ReturnType<typeof makeEmailNotifier>;
+export type EmailNotifierService = ReturnType<typeof makeEmailNotifierFromEnv>;
