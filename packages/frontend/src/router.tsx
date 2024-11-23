@@ -2,6 +2,7 @@ import { createBrowserRouter, redirect } from "react-router-dom"
 import App from "./App"
 import { NotFound } from "./pages/NotFound"
 import { CancelNotifications } from "./pages/CancelNotifications"
+import { cancelNotificationsUrl } from "@word-games/common/src/routes"
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/cancel-notifications",
+    path: cancelNotificationsUrl,
     element: <CancelNotifications />,
   },
   {

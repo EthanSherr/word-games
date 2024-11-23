@@ -6,6 +6,10 @@ import { DateTime } from "luxon"
 import { metaHotTeardown } from "./metaHotTeardown"
 import { makeUserService } from "./service/userService"
 import { makeEmailNotifierFromEnv } from "./service/emailNotificationService"
+import {
+  makeCancelNotificationUrl,
+  makeDailyPyramidUrl,
+} from "@word-games/common/src/routes"
 
 export const makeAppRouter = async () => {
   const pyramidService = makePyramidService()
@@ -36,13 +40,27 @@ export const makeAppRouter = async () => {
       console.error("error generatating word of day", error)
       return
     }
+
+    const frontendUrl = import.meta.env.VITE_FRONTEND_URL
+
+    const dailyPyramidUrl = new URL(
+      frontendUrl,
+      makeDailyPyramidUrl(),
+    ).toString()
+
     const users = await userService.getAllNotifiableUsers()
     for (const user of users) {
+      const cancelNotificationUrl = new URL(
+        frontendUrl,
+        makeCancelNotificationUrl({ email: user.email }),
+      ).toString()
+
       emailService.sendEmail({
         to: user.email,
         subject: "New Pyramid Challenge!",
-        text: `We generated a new email challenge for you. Play it here: ${import.meta.env.VITE_FRONTEND_URL}`,
-        html: `<div>hello</div>`,
+        text:
+          `We generated a new email challenge for you. Play it here: ${dailyPyramidUrl}. ` +
+          `You can unsubscribe here ${cancelNotificationUrl}`,
       })
     }
   })
