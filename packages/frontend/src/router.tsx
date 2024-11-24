@@ -2,19 +2,19 @@ import { createBrowserRouter, redirect } from "react-router-dom"
 import App from "./App"
 import { NotFound } from "./pages/NotFound"
 import { CancelNotifications } from "./pages/CancelNotifications"
-import { cancelNotificationsUrl } from "@word-games/common/src/routes"
+import { frontendRoutes } from "@word-games/common/src/routes/frontendRoutes"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    loader: () => redirect("/word-pyramid"),
+    loader: () => redirect(frontendRoutes.dailyPyramidGame.url),
   },
   {
-    path: "/word-pyramid",
+    path: frontendRoutes.dailyPyramidGame.url,
     element: <App />,
   },
   {
-    path: cancelNotificationsUrl,
+    path: frontendRoutes.cancelNotification.url,
     element: <CancelNotifications />,
   },
   {
