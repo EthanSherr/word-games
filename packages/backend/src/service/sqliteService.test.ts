@@ -26,7 +26,7 @@ describe("sqliteService", () => {
       name TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL
     );`;
-    console.log("x", x);
+
     await sqliteService.run(sql`
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
