@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  frontend-nginx:
+    image: word-games-nginx
+    build:
+      context: packages/frontend
+    ports:
+      - "12345:80"
+  backend:
+    image: word-games-backend
+    build:
+      context: packages/backend
+    ports:
+      - "12346:3000"
