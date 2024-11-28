@@ -74,5 +74,5 @@ function config(options?: { entry?: string }): Plugin {
 }
 
 export function node(): Plugin[] {
-  return [shims(), externals(), config()]
+  return [shims()] // externals(), config()]
 }

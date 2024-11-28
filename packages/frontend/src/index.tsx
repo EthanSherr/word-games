@@ -1,8 +1,8 @@
 // src/index.tsx
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { TrpcQueryContextProvider } from "./connection/TrpcQueryContextProvider"
 import { RouterProvider } from "react-router-dom"
+import { TrpcQueryContextProvider } from "./connection/TrpcQueryContextProvider"
 import router from "./router"
 
 const rootElement = document.getElementById("root")!

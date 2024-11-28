@@ -11,5 +11,9 @@ services:
     image: word-games-backend
     build:
       context: packages/backend
+    volumes:
+      - word-games-backend-data:/data
     ports:
-      - "12346:3000"
+      - "12346:4000"
+volumes:
+  word-games-backend-data:
