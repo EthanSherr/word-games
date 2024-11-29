@@ -5,12 +5,14 @@ services:
     image: word-games-nginx
     build:
       context: packages/frontend
+    platform: linux/arm64/v8
     ports:
       - "12345:80"
   backend:
     image: word-games-backend
     build:
       context: packages/backend
+    platform: linux/arm64/v8
     volumes:
       - word-games-backend-data:/data
     ports:
