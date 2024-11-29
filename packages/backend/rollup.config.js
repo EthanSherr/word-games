@@ -1,17 +1,17 @@
-import { defineConfig } from "rollup"
-import typescript from "rollup-plugin-typescript2"
-import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import json from "@rollup/plugin-json"
+import resolve from "@rollup/plugin-node-resolve"
+import { defineConfig } from "rollup"
+import typescript from "rollup-plugin-typescript2"
 // import globals from "rollup-plugin-node-globals"
 // import builtin from "rollup-plugin-node-builtins"
 // import { terser } from "rollup-plugin-terser"
-import { builtinModules } from "module"
-import polyfillNode from "rollup-plugin-polyfill-node"
 import replace from "@rollup/plugin-replace"
 import dotenv from "dotenv"
 import fs from "fs"
+import { builtinModules } from "module"
 import path from "path"
+import polyfillNode from "rollup-plugin-polyfill-node"
 
 const getEnv = () => {
   // Determine environment
@@ -50,6 +50,7 @@ const getEnv = () => {
   return env
 }
 
+console.log("hello")
 export default defineConfig({
   input: "src/main.ts", // Entry point of your application
   output: {

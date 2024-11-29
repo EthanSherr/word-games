@@ -1,8 +1,8 @@
 // https://dev.to/rxliuli/developing-and-building-nodejs-applications-with-vite-311n
 import MagicString from "magic-string"
-import { Plugin } from "vite"
-import { nodeExternals } from "rollup-plugin-node-externals"
 import path from "path"
+import { nodeExternals } from "rollup-plugin-node-externals"
+import { Plugin } from "vite"
 
 function shims(): Plugin {
   return {
@@ -74,5 +74,5 @@ function config(options?: { entry?: string }): Plugin {
 }
 
 export function node(): Plugin[] {
-  return [shims()] // externals(), config()]
+  return [shims(), externals(), config()]
 }

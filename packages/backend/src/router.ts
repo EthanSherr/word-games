@@ -12,6 +12,8 @@ import { makeUserService } from "./service/userService"
 import { makeWordStoreService } from "./service/wordStoreService"
 import { publicProcedure, router } from "./trpc"
 
+console.log("process.env", process.env)
+console.log("import.meta.env", import.meta.env)
 const envSchema = z.object({
   VITE_PATH_TO_PYRMID_STORAGE: z.string(),
   VITE_PATH_TO_WORDS: z.string(),
