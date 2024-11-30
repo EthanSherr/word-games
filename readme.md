@@ -10,6 +10,19 @@ To run all just run pnpm start (may need to be run in `/packages/backend` `/pack
 pnpm start
 ```
 
+## build:
+
+You will need to read the `packages/backend/readme.md` before you do this - at least you need to know that you need `packages/backend/secrets/.env` which is not checked into source code.
+
+```sh
+# to pack the apps, runs builds in packages/backend and packages/frontend
+pnpm build
+# to build docker containers
+docker-compose build
+# to run it
+docker-compose up -d
+```
+
 # Recommended plugins
 
 [vscode.sql-lit](https://marketplace.visualstudio.com/items?itemName=thebearingedge.vscode-sql-lit)

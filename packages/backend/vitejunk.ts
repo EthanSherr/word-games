@@ -1,17 +1,17 @@
 // https://dev.to/rxliuli/developing-and-building-nodejs-applications-with-vite-311n
-import MagicString from "magic-string";
-import { Plugin } from "vite";
-import { nodeExternals } from "rollup-plugin-node-externals";
-import path from "path";
+import MagicString from "magic-string"
+import path from "path"
+import { nodeExternals } from "rollup-plugin-node-externals"
+import { Plugin } from "vite"
 
 function shims(): Plugin {
   return {
     name: "node-shims",
     renderChunk(code, chunk) {
       if (!chunk.fileName.endsWith(".js")) {
-        return null;
+        return null
       }
-      const s = new MagicString(code);
+      const s = new MagicString(code)
       s.prepend(`
 import __path from 'path';
 import { fileURLToPath as __fileURLToPath } from 'url';
@@ -23,14 +23,14 @@ const __dirname = __getDirname();
 const __filename = __getFilename();
 const self = globalThis;
 const require = __createRequire(import.meta.url);
-`);
+`)
       return {
         code: s.toString(),
         map: s.generateMap({ hires: true }),
-      };
+      }
     },
     apply: "build",
-  };
+  }
 }
 
 function externals(): Plugin {
@@ -41,11 +41,11 @@ function externals(): Plugin {
     name: "node-externals",
     enforce: "pre", // The key is to run it before Vite's default dependency resolution plugin
     apply: "build",
-  };
+  }
 }
 
 function config(options?: { entry?: string }): Plugin {
-  const entry = options?.entry ?? "src/main.ts";
+  const entry = options?.entry ?? "src/main.ts"
   return {
     name: "node-config",
     config() {
@@ -67,12 +67,12 @@ function config(options?: { entry?: string }): Plugin {
           mainFields: ["module", "jsnext:main", "jsnext"],
           conditions: ["node"],
         },
-      };
+      }
     },
     apply: "build",
-  };
+  }
 }
 
 export function node(): Plugin[] {
-  return [shims(), externals(), config()];
+  return [shims(), externals(), config()]
 }

@@ -1,37 +1,28 @@
-import { PyramidPrompt } from "@word-games/common/src/model/pyramid";
-import {
-  PyramidStoreService,
-  makePyramidStoreService,
-} from "./pyramidStoreService";
-import {
-  makeWordRelationGraph,
-  WordRelationGraph,
-} from "@word-games/common/src/word-utils/wordRelationGraph";
 import {
   AnagramLookup,
+  ErrorType,
   makeAnagramLookup,
-} from "@word-games/common/src/word-utils/anagramLookup";
-import seedrandom from "seedrandom";
-import { makeWordStoreService, WordStoreService } from "./wordStoreService";
+  makeWordRelationGraph,
+  PyramidPrompt,
+  WordRelationGraph,
+} from "@word-games/common"
+import seedrandom from "seedrandom"
+import { WordStoreService } from "./wordStoreService"
 
 export const makePyramidService = (
-  wordStore: WordStoreService = makeWordStoreService(),
-  store: PyramidStoreService = makePyramidStoreService(),
+  wordStore: WordStoreService,
+  store: PyramidStoreAdapter,
 ) => {
-  const init = async () => {
-    await store.init();
-  };
-
   const getAllPyramids = async () => {
-    const [getWordsErr, words] = await wordStore.getWords();
+    const [getWordsErr, words] = await wordStore.getWords()
     if (getWordsErr) {
-      return [getWordsErr, null] as const;
+      return [getWordsErr, null] as const
     }
 
     // anagramLookup helper resolves word => all anagrams super quickly.
-    const anagramLookup = makeAnagramLookup();
+    const anagramLookup = makeAnagramLookup()
     for (const word of words) {
-      anagramLookup.insert(word);
+      anagramLookup.insert(word)
     }
 
     // the graph is an abstract concept, in which every word is a unique node.
@@ -39,51 +30,51 @@ export const makePyramidService = (
     // Aka, X minus one character is an anagram of Y
     // Example:
     // fare => [far, are]
-    const graph = makeWordRelationGraph();
+    const graph = makeWordRelationGraph()
     for (const word of words) {
       for (let i = 0; i < word.length; i++) {
-        const newChars = word.slice(0, i) + word.slice(i + 1);
+        const newChars = word.slice(0, i) + word.slice(i + 1)
 
-        const anagrams = anagramLookup.getAnagrams(newChars);
+        const anagrams = anagramLookup.getAnagrams(newChars)
         if (!anagrams) {
           // every word is an anagram of itself, so if there's nothing found in anagrams then
           // this is not a word.
-          continue;
+          continue
         }
 
         for (const nextLayerWord of anagrams) {
-          graph.addDirectedRelation(word, nextLayerWord);
+          graph.addDirectedRelation(word, nextLayerWord)
         }
       }
     }
 
-    const pyramidDepth = 5;
-    const topLevelWords = words.filter((w) => w.length == pyramidDepth);
-    const allPyramidSolutions = new Array<Array<string>>();
+    const pyramidDepth = 5
+    const topLevelWords = words.filter((w) => w.length == pyramidDepth)
+    const allPyramidSolutions = new Array<Array<string>>()
     for (const w of topLevelWords) {
-      findAllPyramids(graph, anagramLookup, allPyramidSolutions, w, 5, []);
+      findAllPyramids(graph, anagramLookup, allPyramidSolutions, w, 5, [])
     }
 
-    return [null, { allPyramidSolutions, graph }] as const;
-  };
+    return [null, { allPyramidSolutions, graph }] as const
+  }
 
   const generate = async (strSeed: string) => {
-    const [err, result] = await getAllPyramids();
+    const [err, result] = await getAllPyramids()
     if (err) {
-      console.error("[pyramidGeneratorService] Error generating game", err);
-      return [err, null] as const;
+      console.error("[pyramidGeneratorService] Error generating game", err)
+      return [err, null] as const
     }
 
-    const { allPyramidSolutions, graph } = result;
+    const { allPyramidSolutions, graph } = result
 
-    const rand = seedrandom(strSeed);
+    const rand = seedrandom(strSeed)
     const pyramid =
-      allPyramidSolutions[Math.floor(rand() * allPyramidSolutions.length)];
+      allPyramidSolutions[Math.floor(rand() * allPyramidSolutions.length)]
 
-    const startingWord = pyramid[0];
+    const startingWord = pyramid[0]
     // copy subgraph of solutions for verification later
-    const subgraphOfSolutions = makeWordRelationGraph();
-    graph.copy(subgraphOfSolutions, startingWord);
+    const subgraphOfSolutions = makeWordRelationGraph()
+    graph.copy(subgraphOfSolutions, startingWord)
 
     // Build the prompt - to be served to the UI
     const pyramidPrompt: PyramidPrompt = {
@@ -94,111 +85,125 @@ export const makePyramidService = (
           editable: true,
         })),
       ),
-    };
+    }
 
     // The first and last layers are not editable
     for (const cell of pyramidPrompt.layers.at(0)!) {
-      cell.editable = false;
+      cell.editable = false
     }
 
     for (const cell of pyramidPrompt.layers.at(-1)!) {
-      cell.editable = false;
+      cell.editable = false
     }
 
     // One random character of the 2nd layer will be revealed/ not editable
-    const secondLayer = pyramidPrompt.layers.at(1)!;
-    const randomSecondLayerCharacter = Math.floor(rand() * secondLayer.length);
-    secondLayer.at(randomSecondLayerCharacter)!.editable = false;
+    const secondLayer = pyramidPrompt.layers.at(1)!
+    const randomSecondLayerCharacter = Math.floor(rand() * secondLayer.length)
+    secondLayer.at(randomSecondLayerCharacter)!.editable = false
 
     // Solution prompt has actual answers filled in, but may not be the only answer.
-    const solutionPrompt = structuredClone(pyramidPrompt);
+    const solutionPrompt = structuredClone(pyramidPrompt)
 
     // if the cell is editable, clear the character!
     for (const layer of pyramidPrompt.layers) {
       for (const cell of layer) {
-        if (!cell.editable) continue;
-        cell.character = "";
+        if (!cell.editable) continue
+        cell.character = ""
       }
     }
 
     // reduce the subgraph of solutions
     subgraphOfSolutions.filterRelations((from: string, to: string) => {
-      const layerIdx = startingWord.length - to.length;
-      const layer = pyramidPrompt.layers[layerIdx];
-      if (!layer) return false;
+      const layerIdx = startingWord.length - to.length
+      const layer = pyramidPrompt.layers[layerIdx]
+      if (!layer) return false
 
       // non editable cells must not have been changed.
       for (let cellIdx = 0; cellIdx < layer.length; cellIdx++) {
-        const cell = layer[cellIdx];
+        const cell = layer[cellIdx]
         if (!cell.editable && cell.character != to[cellIdx]) {
           // this possible solution is not valid because it
           // doesn't agree on the non-editable characters, so remove it!
-          return false;
+          return false
         }
       }
 
-      return true;
-    });
+      return true
+    })
 
     // generate all answers flattened - with non editable characters agreeing from what was generated above.
     const allSolutionsStartingAtStartWord = flattenGraph(
       subgraphOfSolutions,
       startingWord,
       startingWord.length,
-    );
+    )
 
-    await store.setCurrentPyramidPrompt(pyramidPrompt);
-    await store.setCurrentPyramidSolutionSubgraph(subgraphOfSolutions);
-    await store.setCurrentPyramidSolutionsDebug(
-      allSolutionsStartingAtStartWord,
-    );
+    await store.setCurrentPyramidPrompt(pyramidPrompt)
+    await store.setCurrentPyramidSolutionSubgraph(subgraphOfSolutions)
+    await store.setCurrentPyramidSolutionsDebug(allSolutionsStartingAtStartWord)
 
     return [
       null,
       { prompt: pyramidPrompt, solutionPrompt, subgraphOfSolutions },
-    ] as const;
-  };
+    ] as const
+  }
 
   const getPyramidOfTheDay = async () => {
-    return store.getCurrentPyramidPrompt();
-  };
+    return store.getCurrentPyramidPrompt()
+  }
 
   const isValidPyramidSolution = async (maybeSolution: PyramidPrompt) => {
     const [errorGettingPrompt, currentPrompt] =
-      await store.getCurrentPyramidPrompt();
+      await store.getCurrentPyramidPrompt()
     if (errorGettingPrompt) {
-      return [errorGettingPrompt, null] as const;
+      return [errorGettingPrompt, null] as const
     }
 
     // are they trying to cheat the initial prompt?
     if (!nonEditableFieldsAreValid(currentPrompt, maybeSolution)) {
-      return [null, false] as const;
+      return [null, false] as const
     }
 
     // is this actually a valid pyramid answer?
     const [errorGettingSolutions, solutionsGraph] =
-      await store.getCurrentPyramidSolutionGraph();
+      await store.getCurrentPyramidSolutionGraph()
 
     if (errorGettingSolutions) {
-      return [errorGettingSolutions, null] as const;
+      return [errorGettingSolutions, null] as const
     }
 
     const pyramidWords = maybeSolution.layers.map((layer) =>
       layer.map((cell) => cell.character).join(""),
-    );
+    )
 
-    return [null, isPyramidValid(pyramidWords, solutionsGraph)];
-  };
+    return [null, isPyramidValid(pyramidWords, solutionsGraph)]
+  }
 
   return {
-    init,
     generate,
     getPyramidOfTheDay,
     isValidPyramidSolution,
-  };
-};
+  }
+}
 
-export type PyramidService = ReturnType<typeof makePyramidService>;
+export type PyramidService = ReturnType<typeof makePyramidService>
+export type PyramidStoreAdapter = {
+  getCurrentPyramidPrompt: () => Promise<
+    ErrorType<PyramidPrompt, Error | "ENOENT">
+  >
+  getCurrentPyramidSolutionGraph: () => Promise<
+    ErrorType<WordRelationGraph, Error | "ENOENT">
+  >
+  setCurrentPyramidPrompt: (
+    prompt: PyramidPrompt,
+  ) => Promise<readonly [Error, null] | [null, void]>
+  setCurrentPyramidSolutionSubgraph: (
+    solutions: WordRelationGraph,
+  ) => Promise<ErrorType<void, Error>>
+  setCurrentPyramidSolutionsDebug: (
+    solutions: Array<Array<string>>,
+  ) => Promise<readonly [Error, null] | [null, void]>
+}
 
 const nonEditableFieldsAreValid = (
   trusted: PyramidPrompt,
@@ -206,16 +211,16 @@ const nonEditableFieldsAreValid = (
 ) => {
   // wrong number of pyramid layers? the hek
   if (trusted.layers.length != untrusted.layers.length) {
-    return false;
+    return false
   }
 
   for (let layerIndex = 0; layerIndex < trusted.layers.length; layerIndex++) {
-    const trustedLayer = trusted.layers[layerIndex]!;
-    const untrustedLayer = untrusted.layers[layerIndex]!;
+    const trustedLayer = trusted.layers[layerIndex]!
+    const untrustedLayer = untrusted.layers[layerIndex]!
 
     // there's more characters in this layer? the heck!?
     if (trustedLayer.length != untrustedLayer.length) {
-      return false;
+      return false
     }
 
     for (
@@ -223,41 +228,41 @@ const nonEditableFieldsAreValid = (
       characterIndex < trustedLayer.length;
       characterIndex++
     ) {
-      const trustedChar = trustedLayer[characterIndex]!;
-      const untrustedChar = trustedLayer[characterIndex]!;
+      const trustedChar = trustedLayer[characterIndex]!
+      const untrustedChar = trustedLayer[characterIndex]!
 
       // they changed a non editable?! Cheater!
       if (
         !trustedChar.editable &&
         trustedChar.character != untrustedChar.character
       ) {
-        return false;
+        return false
       }
     }
   }
 
-  return true;
-};
+  return true
+}
 
 const isPyramidValid = (
   pyramidWords: Array<string>,
   solutionsGraph: WordRelationGraph,
 ) => {
-  console.log("isPyramidValid caleld!");
+  console.log("isPyramidValid caleld!")
   for (let i = 0; i < pyramidWords.length - 1; i++) {
-    const currentWord = pyramidWords[i].toLowerCase();
-    const nextWord = pyramidWords[i + 1].toLowerCase();
-    const relations = solutionsGraph.getRelation(currentWord);
+    const currentWord = pyramidWords[i].toLowerCase()
+    const nextWord = pyramidWords[i + 1].toLowerCase()
+    const relations = solutionsGraph.getRelation(currentWord)
 
     // we must have this word in our subgraph
     // the next word must be related to this word
     if (!relations || !relations.has(nextWord)) {
-      return false;
+      return false
     }
   }
 
-  return true;
-};
+  return true
+}
 
 // traverse a graph to find all pyramids
 const findAllPyramids = (
@@ -272,27 +277,27 @@ const findAllPyramids = (
   // build up the pyramid of the current traversal
   path: Array<string>,
 ) => {
-  path.push(word);
+  path.push(word)
   if (depth === 1) {
     // if we got to depth 1 - then this is a solution to a pyramid!
-    solutions.push(path);
-    return;
+    solutions.push(path)
+    return
   }
 
-  const relations = graph.getRelation(word);
+  const relations = graph.getRelation(word)
   // if there are no relations in the graph, then there doesn't exist any anagram for this word minus any character
-  if (!relations) return;
+  if (!relations) return
 
   for (const relatedChars of [...relations]) {
-    const relatedWords = anagramLookup.getAnagrams(relatedChars);
-    if (!relatedWords) return;
+    const relatedWords = anagramLookup.getAnagrams(relatedChars)
+    if (!relatedWords) return
     for (const relatedWord of relatedWords) {
       findAllPyramids(graph, anagramLookup, solutions, relatedWord, depth - 1, [
         ...path,
-      ]);
+      ])
     }
   }
-};
+}
 
 const flattenGraph = (
   graph: WordRelationGraph,
@@ -301,17 +306,17 @@ const flattenGraph = (
   solution: Array<string> = new Array(),
   allSolutions: Array<Array<string>> = new Array(),
 ) => {
-  solution.push(word);
+  solution.push(word)
   if (depth === 1) {
-    allSolutions.push(solution);
-    return allSolutions;
+    allSolutions.push(solution)
+    return allSolutions
   }
 
-  const relation = graph.getRelation(word);
-  if (!relation) return allSolutions;
+  const relation = graph.getRelation(word)
+  if (!relation) return allSolutions
 
   for (const relatedWord of relation) {
-    flattenGraph(graph, relatedWord, depth - 1, [...solution], allSolutions);
+    flattenGraph(graph, relatedWord, depth - 1, [...solution], allSolutions)
   }
-  return allSolutions;
-};
+  return allSolutions
+}

@@ -15,7 +15,9 @@ WG_EMAIL_NOTIFIER_PASSWORD="tee hee hee or whatever the pass is from gmail"
 2. Now, to pick these secrets up from you `secrets/.env` you'll have to run
 
 ```sh
+set -a
 source secrets/.env
+set +a
 ```
 
 After doing this you should be able to `echo $WG_EMAIL_NOTIFIER_EMAIL` and it'll print what's in your secrets/.env.

@@ -1,4 +1,9 @@
 {
   "singleQuote": false,
-  "semi": false
+  "semi": false,
+  "plugins": [
+    "prettier-plugin-packagejson",
+    "prettier-plugin-organize-imports"
+  ],
+  "organizeImportsSkipDestructiveCodeActions": true
 }
