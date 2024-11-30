@@ -2,15 +2,16 @@ import { frontendRoutes } from "@word-games/common"
 import { DateTime } from "luxon"
 import cron from "node-cron"
 import { z } from "zod"
+import { makeEmailNotifierAdapter } from "./adapter/emailNotificationAdapter"
+import { makePyramidStoreAdapter } from "./adapter/pyramidStoreAdapter"
+import { makeUserStoreAdapter } from "./adapter/userStoreAdapter"
 import { metaHotTeardown } from "./metaHotTeardown"
-import { makeEmailNotifier } from "./service/emailNotificationService"
-import { makeFileStorageService } from "./service/fileStorageService"
 import { makePyramidService } from "./service/pyramidService"
-import { makePyramidStoreService } from "./service/pyramidStoreService"
-import { makeSqliteService } from "./service/sqliteService"
 import { makeUserService } from "./service/userService"
 import { makeWordStoreService } from "./service/wordStoreService"
 import { publicProcedure, router } from "./trpc"
+import { makeFileStorageHelper } from "./utils/fileStorageHelper"
+import { makeSqliteConnection } from "./utils/sqliteConnection"
 
 console.log("process.env", process.env)
 console.log("import.meta.env", import.meta.env)
@@ -42,18 +43,20 @@ const bootstrap = async () => {
   // Configure it?
   const wordStore = makeWordStoreService()
 
-  const fileStorageAdapter = makeFileStorageService(pyramidStorageDIr)
+  const fileStorageAdapter = makeFileStorageHelper(pyramidStorageDIr)
   await fileStorageAdapter.init()
 
-  const pyramidStore = makePyramidStoreService(fileStorageAdapter)
+  const pyramidStore = makePyramidStoreAdapter(fileStorageAdapter)
   const pyramidService = makePyramidService(wordStore, pyramidStore)
 
-  const userService = makeUserService(makeSqliteService(sqliteDbPath))
-  await userService.init()
+  const sqliteConnection = makeSqliteConnection(sqliteDbPath)
+  const userStore = makeUserStoreAdapter(sqliteConnection)
+  await userStore.init()
+  const userService = makeUserService(userStore)
 
   const secure = Boolean(VITE_EMAIL_NOTIFIER_SECURE)
 
-  const emailService = makeEmailNotifier({
+  const emailService = makeEmailNotifierAdapter({
     host: VITE_EMAIL_NOTIFIER_HOST,
     pass: VITE_EMAIL_NOTIFIER_PASSWORD,
     secure,

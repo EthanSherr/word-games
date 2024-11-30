@@ -1,15 +1,13 @@
-import { describe, vi, expect, test } from "vitest"
-import { makeWordStoreService } from "./wordStoreService"
-import { makePyramidService } from "./pyramidService"
-import { PyramidStoreService } from "./pyramidStoreService"
 import { PyramidPrompt } from "@word-games/common"
 import { WordRelationGraph } from "packages/common/src/word-utils/wordRelationGraph"
+import { describe, expect, test, vi } from "vitest"
+import { makePyramidService, PyramidStoreAdapter } from "./pyramidService"
+import { makeWordStoreService } from "./wordStoreService"
 
-const makeMockPyramidStore = (): PyramidStoreService => {
+const makeMockPyramidStore = (): PyramidStoreAdapter => {
   let solutionGraph: WordRelationGraph
   let prompt: PyramidPrompt | undefined
   return {
-    init: vi.fn(),
     getCurrentPyramidPrompt: async () => {
       if (!prompt) throw "No Prompt"
       return [null, prompt]

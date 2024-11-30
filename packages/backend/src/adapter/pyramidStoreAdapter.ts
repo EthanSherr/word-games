@@ -4,11 +4,7 @@ import {
   PyramidPrompt,
   WordRelationGraph,
 } from "@word-games/common"
-import path from "path"
-import {
-  FileStorageService,
-  makeFileStorageService,
-} from "./fileStorageService"
+import { FileStorageHelper } from "../utils/fileStorageHelper"
 
 // maybe pull from env, and default to ./storage for local?
 // const storageDirectory = "./storage"
@@ -26,7 +22,7 @@ const getSolutionsDebugFilename = (id: string) => `${id}-solutions-debug.json`
 // We store alphabet stuff here
 
 // TODO i think this is a mistake!
-export const makePyramidStoreService = (fileService: FileStorageService) => {
+export const makePyramidStoreAdapter = (fileService: FileStorageHelper) => {
   const getPyramidPrompt = async (
     id: string,
   ): Promise<ErrorType<PyramidPrompt, Error | "ENOENT">> => {
@@ -91,4 +87,3 @@ export const makePyramidStoreService = (fileService: FileStorageService) => {
     setCurrentPyramidSolutionsDebug,
   }
 }
-export type PyramidStoreService = ReturnType<typeof makePyramidStoreService>

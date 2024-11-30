@@ -1,6 +1,6 @@
 import sqlite from "sqlite3"
 
-export const makeSqliteService = (dbPath: string) => {
+export const makeSqliteConnection = (dbPath: string) => {
   let db: sqlite.Database | undefined
 
   const getDbConnection = async () => {
@@ -64,4 +64,4 @@ export type Statement = {
   params: Array<any>
 }
 
-export type SqliteService = ReturnType<typeof makeSqliteService>
+export type SqliteConnection = ReturnType<typeof makeSqliteConnection>

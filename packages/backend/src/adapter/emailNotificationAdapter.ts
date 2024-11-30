@@ -8,7 +8,7 @@ export type EmailNotifierProps = {
   secure: boolean
 }
 
-export const makeEmailNotifier = ({
+export const makeEmailNotifierAdapter = ({
   host,
   user,
   pass,
@@ -55,4 +55,4 @@ export type EmailOptions = {
   html?: string
 }
 
-export type EmailNotifierService = ReturnType<typeof makeEmailNotifier>
+export type EmailNotifierAdapter = ReturnType<typeof makeEmailNotifierAdapter>

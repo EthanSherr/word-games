@@ -1,17 +1,17 @@
 import {
   AnagramLookup,
+  ErrorType,
   makeAnagramLookup,
   makeWordRelationGraph,
   PyramidPrompt,
   WordRelationGraph,
 } from "@word-games/common"
 import seedrandom from "seedrandom"
-import { PyramidStoreService } from "./pyramidStoreService"
 import { WordStoreService } from "./wordStoreService"
 
 export const makePyramidService = (
   wordStore: WordStoreService,
-  store: PyramidStoreService,
+  store: PyramidStoreAdapter,
 ) => {
   const getAllPyramids = async () => {
     const [getWordsErr, words] = await wordStore.getWords()
@@ -187,6 +187,23 @@ export const makePyramidService = (
 }
 
 export type PyramidService = ReturnType<typeof makePyramidService>
+export type PyramidStoreAdapter = {
+  getCurrentPyramidPrompt: () => Promise<
+    ErrorType<PyramidPrompt, Error | "ENOENT">
+  >
+  getCurrentPyramidSolutionGraph: () => Promise<
+    ErrorType<WordRelationGraph, Error | "ENOENT">
+  >
+  setCurrentPyramidPrompt: (
+    prompt: PyramidPrompt,
+  ) => Promise<readonly [Error, null] | [null, void]>
+  setCurrentPyramidSolutionSubgraph: (
+    solutions: WordRelationGraph,
+  ) => Promise<ErrorType<void, Error>>
+  setCurrentPyramidSolutionsDebug: (
+    solutions: Array<Array<string>>,
+  ) => Promise<readonly [Error, null] | [null, void]>
+}
 
 const nonEditableFieldsAreValid = (
   trusted: PyramidPrompt,

@@ -10,7 +10,8 @@
     "build": "rollup -c rollup.config.js",
     "offline": "vite-node ./src/offline.ts",
     "start": "vite-node -w src/main.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@types/cors": "^2.8.17",

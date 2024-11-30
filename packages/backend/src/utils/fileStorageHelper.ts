@@ -1,9 +1,9 @@
-import path from "path"
+import { tryCatch } from "@word-games/common"
 import fs from "fs"
 import fsPromises from "fs/promises"
-import { tryCatch } from "@word-games/common"
+import path from "path"
 
-export const makeFileStorageService = (rootStorage: string = "./storage") => {
+export const makeFileStorageHelper = (rootStorage: string = "./storage") => {
   const init = async () => {
     if (!fs.existsSync(rootStorage)) {
       await fsPromises.mkdir(rootStorage, { recursive: true })
@@ -70,4 +70,4 @@ export const makeFileStorageService = (rootStorage: string = "./storage") => {
     writeFileJson,
   }
 }
-export type FileStorageService = ReturnType<typeof makeFileStorageService>
+export type FileStorageHelper = ReturnType<typeof makeFileStorageHelper>
