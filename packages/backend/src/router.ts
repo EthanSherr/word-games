@@ -13,8 +13,6 @@ import { publicProcedure, router } from "./trpc"
 import { makeFileStorageHelper } from "./utils/fileStorageHelper"
 import { makeSqliteConnection } from "./utils/sqliteConnection"
 
-console.log("process.env", process.env)
-console.log("import.meta.env", import.meta.env)
 const envSchema = z.object({
   VITE_PATH_TO_PYRMID_STORAGE: z.string(),
   VITE_PATH_TO_WORDS: z.string(),
