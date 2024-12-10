@@ -33,21 +33,25 @@ for IMAGE in "${IMAGES[@]}"; do
     rm "$(basename "$IMAGE").tar"
 done
 
-INSTALL_DIR=~/deployments/$PROJECT_NAME
+INSTALL_DIR="~/deployments/$PROJECT_NAME"
 # ??
 # ssh "$SERVER_USER@$SERVER_IP" "mkdir -p $INSTALL_DIR"
 
 # Step 3: Transfer tarball to the server
 echo "Transferring tarball to the server..."
+echo "gonna scp the $TAR_FILE to $SERVER:$INSTALL_DIR"
 scp "$TAR_FILE" "$SERVER:$INSTALL_DIR"
 
 rm "$TAR_FILE"
 
 # Step 4: SSH into the server and handle deployment
 echo "Deploying on the server..."
-ssh "$SERVER_USER@$SERVER_IP" << EOF
+ssh "$SERVER" << EOF
     # Go to the deployment directory
     cd $INSTALL_DIR
+
+    # At least for may@may-pi, the user may doens't have docker permission so... sudo su
+    sudo su
 
     if [ -f "docker-compose.yml" ] || [ -f "compose.yaml" ]; then
         echo "Stopping containers and removing previous images"

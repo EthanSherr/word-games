@@ -1,7 +1,7 @@
 // vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import styleX from "vite-plugin-stylex";
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+import styleX from "vite-plugin-stylex"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,5 +11,11 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
+    proxy: {
+      "/trpc": {
+        target: "http://localhost:4000",
+        changeOrigin: true,
+      },
+    },
   },
-});
+})
