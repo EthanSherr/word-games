@@ -81,7 +81,7 @@ const bootstrap = async () => {
       try {
         // This is probably not the right place for this...
         console.log("running job cron job")
-        const seed = DateTime.now().toLocaleString()
+        const seed = DateTime.now().setZone("America/New_York").toLocaleString()
         const [error] = await pyramidService.generate(seed)
         if (error) {
           console.error("error generatating word of day", error)
