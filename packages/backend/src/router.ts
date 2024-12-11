@@ -5,6 +5,7 @@ import { z } from "zod"
 import { makeEmailNotifierAdapter } from "./adapter/emailNotificationAdapter"
 import { makePyramidStoreAdapter } from "./adapter/pyramidStoreAdapter"
 import { makeUserStoreAdapter } from "./adapter/userStoreAdapter"
+import { env } from "./env"
 import { metaHotTeardown } from "./metaHotTeardown"
 import { makePyramidService } from "./service/pyramidService"
 import { makeUserService } from "./service/userService"
@@ -68,43 +69,63 @@ const bootstrap = async () => {
 
   // Generate one now!
   generate()
+
+  console.log("the time is", DateTime.now().toISO())
+  const schedule = "0 9 * * *"
+  // const schedule = "*/5 * * * *"
+  console.log("scheduling cron", schedule)
   // Schedule a daily 9am challenge!
-  const task = cron.schedule("0 9 * * *", async () => {
-    // This is probably not the right place for this...
+  const task = cron.schedule(
+    schedule,
+    async () => {
+      try {
+        // This is probably not the right place for this...
+        console.log("running job cron job")
+        const seed = DateTime.now().toLocaleString()
+        const [error] = await pyramidService.generate(seed)
+        if (error) {
+          console.error("error generatating word of day", error)
+          return
+        }
 
-    const seed = DateTime.now().toLocaleString()
-    const [error] = await pyramidService.generate(seed)
-    if (error) {
-      console.error("error generatating word of day", error)
-      return
-    }
+        const frontendUrl = env.VITE_FRONTEND_URL
 
-    const frontendUrl = import.meta.env.VITE_FRONTEND_URL
+        const dailyPyramidUrl = new URL(
+          frontendRoutes.dailyPyramidGame.makeUrl(),
+          frontendUrl,
+        ).toString()
 
-    const dailyPyramidUrl = new URL(
-      frontendUrl,
-      frontendRoutes.dailyPyramidGame.makeUrl(),
-    ).toString()
+        const users = await userService.getAllNotifiableUsers()
+        console.log("notify", users)
+        for (const user of users) {
+          const cancelNotificationUrl = new URL(
+            frontendUrl,
+            frontendRoutes.cancelNotification.makeUrl({
+              queryParams: { email: user.email },
+            }),
+          ).toString()
 
-    const users = await userService.getAllNotifiableUsers()
-    for (const user of users) {
-      const cancelNotificationUrl = new URL(
-        frontendUrl,
-        frontendRoutes.cancelNotification.makeUrl({
-          queryParams: { email: user.email },
-        }),
-      ).toString()
-
-      emailService.sendEmail({
-        to: user.email,
-        subject: "New Pyramid Challenge!",
-        text:
-          `We generated a new email challenge for you. Play it here: ${dailyPyramidUrl}. ` +
-          `You can unsubscribe to these emails here: ${cancelNotificationUrl}`,
-      })
-    }
+          await emailService.sendEmail({
+            to: user.email,
+            subject: "New Pyramid Challenge!",
+            text:
+              `We generated a new email challenge for you. Play it here: ${dailyPyramidUrl}. ` +
+              `You can unsubscribe to these emails here: ${cancelNotificationUrl}`,
+          })
+          console.log("2")
+        }
+      } catch (e) {
+        console.error("Error occured generating daily", e)
+      }
+    },
+    {
+      timezone: "America/New_York",
+    },
+  )
+  metaHotTeardown(() => {
+    console.log("stopping task")
+    task.stop()
   })
-  metaHotTeardown(() => task.stop())
 
   return { pyramidService, userService, emailService }
 }

@@ -59,9 +59,10 @@ export const makePyramidService = (
   }
 
   const generate = async (strSeed: string) => {
+    console.log("[pyramidService] generate game from seed", strSeed)
     const [err, result] = await getAllPyramids()
     if (err) {
-      console.error("[pyramidGeneratorService] Error generating game", err)
+      console.error("[pyramidService] Error generating game", err)
       return [err, null] as const
     }
 
@@ -248,7 +249,6 @@ const isPyramidValid = (
   pyramidWords: Array<string>,
   solutionsGraph: WordRelationGraph,
 ) => {
-  console.log("isPyramidValid caleld!")
   for (let i = 0; i < pyramidWords.length - 1; i++) {
     const currentWord = pyramidWords[i].toLowerCase()
     const nextWord = pyramidWords[i + 1].toLowerCase()
