@@ -5,7 +5,7 @@ FROM node:20-slim
 WORKDIR /app
 
 # sqlite3 gotta be installed in the context of the arch....
-RUN npm install sqlite3
+RUN npm install sqlite3@5.1.7
 
 # in synch with .env.production VITE_PATH_TO_WORDS
 COPY ./storage/words.txt ./data/words.txt
