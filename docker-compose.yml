@@ -8,6 +8,8 @@ services:
     platform: linux/arm64/v8
     ports:
       - "12345:80"
+    restart: unless-stopped
+
   backend:
     image: word-games-backend
     build:
@@ -17,5 +19,7 @@ services:
       - word-games-backend-data:/data
     ports:
       - "12346:4000"
+    restart: unless-stopped
+
 volumes:
   word-games-backend-data:

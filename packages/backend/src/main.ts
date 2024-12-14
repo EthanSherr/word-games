@@ -1,8 +1,8 @@
 import { createExpressMiddleware } from "@trpc/server/adapters/express"
 import cors from "cors"
-import { makeAppRouter } from "./router"
 import express from "express"
 import { metaHotTeardown } from "./metaHotTeardown"
+import { makeAppRouter } from "./router"
 
 const main = async () => {
   const app = express()
@@ -32,7 +32,7 @@ const main = async () => {
     console.log("server listening to port", port)
   })
 
-  metaHotTeardown(() => server.close())
+  metaHotTeardown(import.meta.hot, () => server.close())
 }
 
 main()

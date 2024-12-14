@@ -69,10 +69,22 @@ describe("generate pyramid games", () => {
     if (err) {
       throw err
     }
+
     const { solutionPrompt } = result
 
     const [isValidErr, isValid] =
       await pyramidGenerator.isValidPyramidSolution(solutionPrompt)
     console.log("isValid", { isValidErr, isValid })
+  })
+
+  test.only("temp", async () => {
+    const pyramidGenerator = makePyramidService(
+      makeWordStoreService(),
+      makeMockPyramidStore(),
+    )
+
+    const seed = "12/09/2024"
+    const [error] = await pyramidGenerator.generate(seed)
+    console.log("err", error)
   })
 })

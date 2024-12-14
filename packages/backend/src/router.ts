@@ -122,8 +122,7 @@ const bootstrap = async () => {
       timezone: "America/New_York",
     },
   )
-  metaHotTeardown(() => {
-    console.log("stopping task")
+  metaHotTeardown(import.meta.hot, () => {
     task.stop()
   })
 

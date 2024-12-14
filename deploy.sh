@@ -18,31 +18,31 @@ TAR_FILE="$PROJECT_NAME-bundle.tar"  # Tar file name
 DOCKER_COMPOSE_FILE="docker-compose.yml"  # Path to docker-compose.yml
 IMAGES=("word-games-nginx:latest" "word-games-backend:latest")  # List of Docker images to save (provide name:tag)
 
-# Step 1: Save Docker images to a tar file
-echo "Saving Docker images..."
-for IMAGE in "${IMAGES[@]}"; do
-    docker save "$IMAGE" -o "$(basename "$IMAGE").tar"
-done
+# # Step 1: Save Docker images to a tar file
+# echo "Saving Docker images..."
+# for IMAGE in "${IMAGES[@]}"; do
+#     docker save "$IMAGE" -o "$(basename "$IMAGE").tar"
+# done
 
-# Step 2: Bundle docker-compose.yml and images into a tar archive
-echo "Creating deployment tarball..."
-tar -cf "$TAR_FILE" "$DOCKER_COMPOSE_FILE" *.tar
+# # Step 2: Bundle docker-compose.yml and images into a tar archive
+# echo "Creating deployment tarball..."
+# tar -cf "$TAR_FILE" "$DOCKER_COMPOSE_FILE" *.tar
 
-echo "Cleanup!"
-for IMAGE in "${IMAGES[@]}"; do
-    rm "$(basename "$IMAGE").tar"
-done
+# echo "Cleanup!"
+# for IMAGE in "${IMAGES[@]}"; do
+#     rm "$(basename "$IMAGE").tar"
+# done
 
-INSTALL_DIR="~/deployments/$PROJECT_NAME"
-# ??
-# ssh "$SERVER_USER@$SERVER_IP" "mkdir -p $INSTALL_DIR"
+# INSTALL_DIR="~/deployments/$PROJECT_NAME"
+# # ??
+# # ssh "$SERVER_USER@$SERVER_IP" "mkdir -p $INSTALL_DIR"
 
-# Step 3: Transfer tarball to the server
-echo "Transferring tarball to the server..."
-echo "gonna scp the $TAR_FILE to $SERVER:$INSTALL_DIR"
+# # Step 3: Transfer tarball to the server
+# echo "Transferring tarball to the server..."
+# echo "gonna scp the $TAR_FILE to $SERVER:$INSTALL_DIR"
 scp "$TAR_FILE" "$SERVER:$INSTALL_DIR"
 
-rm "$TAR_FILE"
+# rm "$TAR_FILE"
 
 # Step 4: SSH into the server and handle deployment
 echo "Deploying on the server..."
