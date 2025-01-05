@@ -3,8 +3,10 @@ import cors from "cors"
 import express from "express"
 import { metaHotTeardown } from "./metaHotTeardown"
 import { makeAppRouter } from "./router"
+import v8 from 'v8'
 
 const main = async () => {
+  console.log('v8.getHeapStatistics.heap_size_limit', v8.getHeapStatistics().heap_size_limit / 1024 / 1024, 'MB');
   const app = express()
 
   app.use(

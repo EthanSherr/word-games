@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "offline": "vite-node ./src/offline.ts",
-    "start": "vite-node -w src/main.ts",
+    "start": "NODE_OPTIONS=\"--max-old-space-size=4096\" vite-node -w src/main.ts",
     "test": "vitest",
     "type-check": "tsc --noEmit"
   },

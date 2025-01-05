@@ -133,6 +133,7 @@ export const makeAppRouter = async () => {
   const { pyramidService, userService } = await bootstrap()
   return router({
     getPyramidOfTheDay: publicProcedure.query(async () => {
+
       const [err, result] = await pyramidService.getPyramidOfTheDay()
 
       if (err) {

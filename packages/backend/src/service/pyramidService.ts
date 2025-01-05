@@ -14,6 +14,7 @@ export const makePyramidService = (
   store: PyramidStoreAdapter,
 ) => {
   const getAllPyramids = async () => {
+    console.time("[PyramidService] getAllPyramids");
     const [getWordsErr, words] = await wordStore.getWords()
     if (getWordsErr) {
       return [getWordsErr, null] as const
@@ -55,6 +56,7 @@ export const makePyramidService = (
       findAllPyramids(graph, anagramLookup, allPyramidSolutions, w, 5, [])
     }
 
+    console.timeEnd("[PyramidService] getAllPyramids");
     return [null, { allPyramidSolutions, graph }] as const
   }
 
@@ -65,7 +67,6 @@ export const makePyramidService = (
       console.error("[pyramidService] Error generating game", err)
       return [err, null] as const
     }
-
     const { allPyramidSolutions, graph } = result
 
     const rand = seedrandom(strSeed)
@@ -75,6 +76,7 @@ export const makePyramidService = (
     const startingWord = pyramid[0]
     // copy subgraph of solutions for verification later
     const subgraphOfSolutions = makeWordRelationGraph()
+
     graph.copy(subgraphOfSolutions, startingWord)
 
     // Build the prompt - to be served to the UI
@@ -112,7 +114,6 @@ export const makePyramidService = (
         cell.character = ""
       }
     }
-
     // reduce the subgraph of solutions
     subgraphOfSolutions.filterRelations((from: string, to: string) => {
       const layerIdx = startingWord.length - to.length
