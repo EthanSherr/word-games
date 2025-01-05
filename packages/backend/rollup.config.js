@@ -50,7 +50,6 @@ const getEnv = () => {
   return env
 }
 
-console.log("hello")
 export default defineConfig({
   input: "src/main.ts", // Entry point of your application
   output: {

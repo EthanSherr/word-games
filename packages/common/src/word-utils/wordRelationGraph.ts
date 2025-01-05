@@ -71,6 +71,10 @@ export const makeWordRelationGraph = (
     }
   }
 
+  const size = () => {
+    return relations.size
+  }
+
   return {
     addDirectedRelation,
     filterRelations,
@@ -78,6 +82,7 @@ export const makeWordRelationGraph = (
     serialize,
     copy,
     traverse,
+    size,
   }
 }
 
@@ -102,4 +107,5 @@ export type WordRelationGraph = {
   copy: (graph: WordRelationGraph, word: string) => void
   filterRelations: (filterFn: FilterFn) => void
   traverse: (word: string, visitFn: VisitFn, visited: Set<string>) => void
+  size: () => number
 }

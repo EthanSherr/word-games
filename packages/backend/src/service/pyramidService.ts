@@ -14,11 +14,13 @@ export const makePyramidService = (
   store: PyramidStoreAdapter,
 ) => {
   const getAllPyramids = async () => {
-    console.time("[PyramidService] getAllPyramids");
-    const [getWordsErr, words] = await wordStore.getWords()
+    console.time("[PyramidService] getAllPyramids")
+    const [getWordsErr, allWords] = await wordStore.getWords()
     if (getWordsErr) {
       return [getWordsErr, null] as const
     }
+
+    const words = allWords.filter((l) => l.length <= 5)
 
     // anagramLookup helper resolves word => all anagrams super quickly.
     const anagramLookup = makeAnagramLookup()
@@ -48,6 +50,7 @@ export const makePyramidService = (
         }
       }
     }
+    console.log("Graph size is", graph.size())
 
     const pyramidDepth = 5
     const topLevelWords = words.filter((w) => w.length == pyramidDepth)
@@ -56,7 +59,7 @@ export const makePyramidService = (
       findAllPyramids(graph, anagramLookup, allPyramidSolutions, w, 5, [])
     }
 
-    console.timeEnd("[PyramidService] getAllPyramids");
+    console.timeEnd("[PyramidService] getAllPyramids")
     return [null, { allPyramidSolutions, graph }] as const
   }
 
