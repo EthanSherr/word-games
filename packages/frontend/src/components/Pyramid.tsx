@@ -136,7 +136,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     setPopUpToggle(true);
 
     const x = await mutateAsync(dataArr);
-
+    console.log("is Valid data?", isValidData);
     if (isValidData === false) {
       setShake(true);
       setTrackFails((prevState) => prevState + 1);
@@ -155,18 +155,18 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     itemIndex: number,
   ) => {
     if (event.key.toLowerCase() === "backspace") {
-      console.log("In delete : delete is pressed: ", event.key);
+      // console.log("In delete : delete is pressed: ", event.key);
       //when delete is pressed and curr item has data , delete it
       if (
         dataArr.layers[arrayIndex][itemIndex].character.length > 0 &&
         dataArr.layers[arrayIndex][itemIndex].editable
       ) {
-        console.log("In delete : call the update array ");
+        // console.log("In delete : call the update array ");
         updateDataArr(arrayIndex, itemIndex, "");
       } else {
         //if cur index is not the begining and the prev one is editable > go
         if (itemIndex > 0) {
-          console.log("In delete: go to prev one");
+          // console.log("In delete: go to prev one");
           for (let i = 1; i < dataArr.layers[arrayIndex].length; i++) {
             if (dataArr.layers[arrayIndex][itemIndex - i].editable) {
               inputRefs[arrayIndex][itemIndex - i].current?.focus();
@@ -177,7 +177,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
 
         //if cur index is at the beginning and there are layers above >  go to above layer
         if (itemIndex == 0 && arrayIndex > 0) {
-          console.log("In delete: go to prev LAYER");
+          // console.log("In delete: go to prev LAYER");
 
           // for (let i = 1; i < dataArr.layers.length; i++) {
           const getTheLastIndexOfPrevLayer: number =
@@ -212,6 +212,11 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
       <div {...stylex.props(styles.base)}>
         <div>
           <TrackFails fails={trackFails} />
+          {isValidData && (
+            <p {...stylex.props(styles.text2)}>
+              Whoa You did it! Come back tomorrow for a new challenge!
+            </p>
+          )}
         </div>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
@@ -322,7 +327,18 @@ const styles = stylex.create({
     // backgroundColor: tokens.yellow,
     textAlign: "center",
   },
+  text2: {
+    margin: "0",
+    // marginTop: "0rem",
+    // padding: "1rem",
+    fontSize: "1em",
+    fontWeight: "800",
+    color: tokens.pink,
+    // backgroundColor: tokens.yellow,
+    textAlign: "center",
+  },
   trackFails: {
+    // backgroundColor: "pink",
     color: tokens.yellow,
     display: "flex",
     flexDirection: "row",
