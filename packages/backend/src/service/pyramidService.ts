@@ -69,8 +69,8 @@ export const makePyramidService = (
     const { allPyramidSolutions, graph } = result
 
     const rand = seedrandom(strSeed)
-    const pyramid =
-      allPyramidSolutions[Math.floor(rand() * allPyramidSolutions.length)]
+    const randomIndex = Math.floor(rand() * allPyramidSolutions.length)
+    const pyramid = allPyramidSolutions[randomIndex]
 
     const startingWord = pyramid[0]
     // copy subgraph of solutions for verification later
@@ -145,7 +145,16 @@ export const makePyramidService = (
 
     return [
       null,
-      { prompt: pyramidPrompt, solutionPrompt, subgraphOfSolutions },
+      // prompt - the orignal prompt
+      // solutionPrompt - one actual solution
+      // subgraphOfSolutions - all possible solutions
+      // allSolutionsStartingAtStartWord - flattened subgraphOfSolutions
+      {
+        prompt: pyramidPrompt,
+        solutionPrompt,
+        subgraphOfSolutions,
+        allSolutionsStartingAtStartWord,
+      },
     ] as const
   }
 
