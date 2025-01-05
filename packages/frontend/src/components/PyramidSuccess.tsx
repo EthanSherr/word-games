@@ -10,7 +10,6 @@ type PyramidSuccessProps = {
 };
 export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
   const [togglePopUp, setTogglePopUp] = useState(false);
-
   const { mutateAsync, isSuccess } = trpc.notifyUserDaily.useMutation();
   const [email, setEmail] = useState({ email: "", notify: true });
   const [emailError, setEmailError] = useState(false);
@@ -19,7 +18,7 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
     if (isValidEmail()) {
       const result = await mutateAsync(email);
       setTogglePopUp(true);
-      console.log("Mutate Async Result: ", result);
+      // console.log("Mutate Async Result: ", result);
     } else {
       setEmailError(true);
     }
@@ -27,10 +26,7 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
 
   const isValidEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const isValidEmail = emailRegex.test(email.email);
-    console.log("isValidEmail: ", isValidEmail);
-    return isValidEmail;
+    return emailRegex.test(email.email);
   };
 
   const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +39,7 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
     }));
   };
 
-  console.log("IS successs: ", isSuccess);
+  // console.log("IS successs: ", isSuccess);
   return (
     <div>
       <div {...stylex.props(styles.base)}>
@@ -120,24 +116,14 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
 const styles = stylex.create({
   base: {
     backgroundColor: tokens.offwhite,
-    // width: "100%",
-    // height: "100%",
-    // maxWidth: "50rem",
     maxWidth: "90%",
-    // minHeight: "15rem",
     maxHeight: "50rem",
-    // alignSelf: "center",
-    // alignItems: "center",
     borderRadius: "1rem",
     border: "2px solid black",
     boxShadow: "5px 8px",
     display: "flex",
     flexDirection: "column",
-    // alignContent: "center",
-    // justifyContent: "center",
     alignItems: "center",
-    // justifyItems: "center",
-    // alignSelf: "center",
     justifySelf: "center",
   },
   confettiDiv: {
@@ -161,20 +147,12 @@ const styles = stylex.create({
     textAlign: "center",
   },
   buttonContainerDiv: {
-    // backgroundColor: "red",
     width: "100%",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    // height: "5rem",
-    // marginBottom: "10%",
     gap: "2rem",
-    // marginTop: "6rem",
-    // marginRight: "2rem",
-    // padding: "1rem",
     margin: "1rem",
-    // marginBottom: "2rem",
-    // paddingBottom: "1rem",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -194,8 +172,7 @@ const styles = stylex.create({
     width: "60%",
     minWidth: "18rem",
     padding: ".5rem",
-    // width: "4rem",
-    // height: "4rem",
+
     color: "black",
     textTransform: "uppercase",
     borderRadius: ".5rem",
@@ -218,7 +195,6 @@ const styles = stylex.create({
   },
   inputContainer: {
     height: "3.2rem",
-    // backgroundColor: tokens.orange,
   },
   error: {
     color: "red",

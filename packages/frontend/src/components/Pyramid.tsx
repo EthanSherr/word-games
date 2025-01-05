@@ -136,7 +136,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     setPopUpToggle(true);
 
     const x = await mutateAsync(dataArr);
-
+    console.log("is Valid data?", isValidData);
     if (isValidData === false) {
       setShake(true);
       setTrackFails((prevState) => prevState + 1);
@@ -212,6 +212,11 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
       <div {...stylex.props(styles.base)}>
         <div>
           <TrackFails fails={trackFails} />
+          {isValidData && (
+            <p {...stylex.props(styles.text2)}>
+              Whoa You did it! Come back tomorrow for a new challenge!
+            </p>
+          )}
         </div>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
@@ -322,7 +327,18 @@ const styles = stylex.create({
     // backgroundColor: tokens.yellow,
     textAlign: "center",
   },
+  text2: {
+    margin: "0",
+    // marginTop: "0rem",
+    // padding: "1rem",
+    fontSize: "1em",
+    fontWeight: "800",
+    color: tokens.pink,
+    // backgroundColor: tokens.yellow,
+    textAlign: "center",
+  },
   trackFails: {
+    // backgroundColor: "pink",
     color: tokens.yellow,
     display: "flex",
     flexDirection: "row",
