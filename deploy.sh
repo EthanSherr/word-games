@@ -33,7 +33,7 @@ IMAGES=("word-games-nginx:latest" "word-games-backend:latest")  # List of Docker
 #     rm "$(basename "$IMAGE").tar"
 # done
 
-# INSTALL_DIR="~/deployments/$PROJECT_NAME"
+INSTALL_DIR="~/deployments/$PROJECT_NAME"
 # # ??
 # # ssh "$SERVER_USER@$SERVER_IP" "mkdir -p $INSTALL_DIR"
 
