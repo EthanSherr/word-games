@@ -13,11 +13,14 @@ export const makePyramidService = (
   wordStore: WordStoreService,
   store: PyramidStoreAdapter,
 ) => {
-  const getAllPyramids = async () => {
-    const [getWordsErr, words] = await wordStore.getWords()
+  const getGraphAndStartingWords = async () => {
+    console.time("[getGraphAndStartingWords] getAllPyramids")
+    const [getWordsErr, allWords] = await wordStore.getWords()
     if (getWordsErr) {
       return [getWordsErr, null] as const
     }
+
+    const words = allWords.filter((l) => l.length <= 5)
 
     // anagramLookup helper resolves word => all anagrams super quickly.
     const anagramLookup = makeAnagramLookup()
@@ -30,6 +33,7 @@ export const makePyramidService = (
     // Aka, X minus one character is an anagram of Y
     // Example:
     // fare => [far, are]
+    console.time("[getGraphAndStartingWords] build graph")
     const graph = makeWordRelationGraph()
     for (const word of words) {
       for (let i = 0; i < word.length; i++) {
@@ -47,34 +51,55 @@ export const makePyramidService = (
         }
       }
     }
+    console.timeEnd("[getGraphAndStartingWords] build graph")
+    console.log("Graph size is", graph.size())
 
     const pyramidDepth = 5
     const topLevelWords = words.filter((w) => w.length == pyramidDepth)
-    const allPyramidSolutions = new Array<Array<string>>()
-    for (const w of topLevelWords) {
-      findAllPyramids(graph, anagramLookup, allPyramidSolutions, w, 5, [])
-    }
+    const startingWords = new Array<string>()
 
-    return [null, { allPyramidSolutions, graph }] as const
+    console.time("[getGraphAndStartingWords] find starting words")
+    for (const w of topLevelWords) {
+      if (isRootOfPyramid(graph, anagramLookup, w, 5)) {
+        startingWords.push(w)
+      }
+    }
+    console.timeEnd("[getGraphAndStartingWords] find starting words")
+
+    console.timeEnd("[getGraphAndStartingWords] getAllPyramids")
+    return [null, { startingWords, graph, anagramLookup }] as const
   }
 
   const generate = async (strSeed: string) => {
     console.log("[pyramidService] generate game from seed", strSeed)
-    const [err, result] = await getAllPyramids()
+    const [err, result] = await getGraphAndStartingWords()
     if (err) {
       console.error("[pyramidService] Error generating game", err)
       return [err, null] as const
     }
-
-    const { allPyramidSolutions, graph } = result
+    const { startingWords, graph, anagramLookup } = result
 
     const rand = seedrandom(strSeed)
-    const randomIndex = Math.floor(rand() * allPyramidSolutions.length)
-    const pyramid = allPyramidSolutions[randomIndex]
+    const startingWord =
+      startingWords[Math.floor(rand() * startingWords.length)]
+    console.log("[pyramidService] starting word is:", startingWord)
 
-    const startingWord = pyramid[0]
+    console.time("[pyramidService] find all pyramids from starting word")
+    const solutions = new Array<Array<string>>()
+    findAllPyramids(
+      graph,
+      anagramLookup,
+      solutions,
+      startingWord,
+      5,
+      new Array(),
+    )
+    const pyramid = solutions[Math.floor(rand() * solutions.length)]
+    console.timeEnd("[pyramidService] find all pyramids from starting word")
+
     // copy subgraph of solutions for verification later
     const subgraphOfSolutions = makeWordRelationGraph()
+
     graph.copy(subgraphOfSolutions, startingWord)
 
     // Build the prompt - to be served to the UI
@@ -112,7 +137,6 @@ export const makePyramidService = (
         cell.character = ""
       }
     }
-
     // reduce the subgraph of solutions
     subgraphOfSolutions.filterRelations((from: string, to: string) => {
       const layerIdx = startingWord.length - to.length
@@ -297,7 +321,7 @@ const findAllPyramids = (
   // if there are no relations in the graph, then there doesn't exist any anagram for this word minus any character
   if (!relations) return
 
-  for (const relatedChars of [...relations]) {
+  for (const relatedChars of relations) {
     const relatedWords = anagramLookup.getAnagrams(relatedChars)
     if (!relatedWords) return
     for (const relatedWord of relatedWords) {
@@ -306,6 +330,32 @@ const findAllPyramids = (
       ])
     }
   }
+}
+
+const isRootOfPyramid = (
+  graph: WordRelationGraph,
+  anagramLookup: AnagramLookup,
+  word: string,
+  // current depth, descending
+  depth: number,
+) => {
+  if (depth === 1) {
+    return true
+  }
+  const relations = graph.getRelation(word)
+  if (!relations) return false
+
+  for (const relatedChars of relations) {
+    const relatedWords = anagramLookup.getAnagrams(relatedChars)
+    if (!relatedWords) return
+    for (const relatedWord of relatedWords) {
+      if (isRootOfPyramid(graph, anagramLookup, relatedWord, depth - 1)) {
+        return true
+      }
+    }
+  }
+
+  return false
 }
 
 const flattenGraph = (
