@@ -21,7 +21,7 @@ services:
       - word-games-backend-data:/data
     ports:
       - "12346:4000"
-    # restart: unless-stopped
+    restart: unless-stopped
 
 volumes:
   word-games-backend-data:
