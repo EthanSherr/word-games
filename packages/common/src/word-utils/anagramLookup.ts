@@ -14,6 +14,7 @@ export const makeAnagramLookup = () => {
   const getAll = () => anagramMap
 
   return {
+    toHash,
     insert,
     getAnagrams,
     getAll,
