@@ -1,4 +1,5 @@
 import * as stylex from "@stylexjs/stylex"
+import { Length } from "@stylexjs/stylex/lib/VarTypes"
 import { HiOutlineEmojiSad } from "react-icons/hi"
 import { tokens } from "../tokens.stylex"
 
@@ -12,9 +13,10 @@ export const TrackFails = ({ fails }: TrackFailsType) => {
         <div {...stylex.props(styles.trackFails)}>
           {Array.from({ length: fails }).map(() => {
             return (
-              <div key={length}>
-                <HiOutlineEmojiSad {...stylex.props(styles.emoji)} />
-              </div>
+              <HiOutlineEmojiSad
+                key={Math.random()}
+                {...stylex.props(styles.emoji)}
+              />
             )
           })}
         </div>

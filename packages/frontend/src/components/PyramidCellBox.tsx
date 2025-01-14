@@ -27,7 +27,6 @@ export const PyramidCellBox = ({
   const randomY = Math.floor(Math.random() * 10) + 1
   const randomRotate = Math.floor(Math.random() * 50) + 1
 
-  // console.log("random Rotate: ", randomRotate);
   const shakeAnimation = {
     shake: {
       rotate: [
@@ -42,17 +41,15 @@ export const PyramidCellBox = ({
       y: [randomY * -1, randomY, randomY * -1, randomY, 0],
 
       transition: {
-        duration: 0.5,
+        duration: 0.3,
         ease: "easeInOut",
         // repeat: Infinity,
       },
     },
-    // initial: { x: 0 },
   }
-
   return (
     <motion.input
-      animate={isShaking && editable ? "shake" : "initial"}
+      animate={isShaking === true && editable ? "shake" : "initial"}
       variants={shakeAnimation}
       ref={inputRef}
       {...stylex.props(styles.input(editable))}
@@ -66,6 +63,7 @@ export const PyramidCellBox = ({
       onFocus={(event) => {
         event.target.select()
       }}
+      // onAnimationComplete={() => console.log("Animation completed")}
     ></motion.input>
   )
 }

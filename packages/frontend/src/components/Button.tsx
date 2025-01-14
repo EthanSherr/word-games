@@ -8,6 +8,7 @@ type ButtonProps = {
   onClickFn: () => void
   width?: string
   bgColor?: string
+  disabled?: boolean
 }
 export const Button = ({
   text,
@@ -15,13 +16,22 @@ export const Button = ({
   onClickFn,
   width,
   bgColor,
+  disabled,
 }: ButtonProps) => {
   return (
     <motion.button
       {...stylex.props(styles.base({ width, bgColor }))}
-      whileTap={{ scale: 0.85 }}
-      whileHover={{ scale: 0.95 }}
+      initial={{
+        boxShadow: "5px 5px",
+      }}
+      whileTap={{
+        scale: 0.95,
+        transition: { duration: 0.2 },
+        boxShadow: "0px 0px",
+      }}
+      whileHover={{ boxShadow: "5px 5px #888888" }}
       onClick={onClickFn}
+      disabled={disabled}
     >
       {text}
     </motion.button>
@@ -38,7 +48,7 @@ const styles = stylex.create({
     justifyContent: "center",
     color: "black",
     cursor: "pointer",
-    boxShadow: "2px 5px",
+    // boxShadow: "2px 5px",
     width: "100%",
     "@media (max-width: 480px)": {
       border: "2px solid black",

@@ -23,7 +23,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [trackFails, setTrackFails] = useState(0)
   const [shake, setShake] = useState(false)
   // const [isValidData, setIsValidData] = useState(false)
-
+  const [isDisabled, setIsDisabled] = useState(false)
   const inputRefs = [
     [
       useRef<HTMLInputElement>(null),
@@ -134,21 +134,23 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   }
 
   const submitHandler = async () => {
-    console.log("submit array: ", dataArr)
+    // setShake(false)
+    // console.log("submit array: ", dataArr)
     setPopUpToggle(true)
 
     const updatedIsValidData = await submitAnswer(dataArr)
 
-    console.log("is Valid data?", updatedIsValidData)
     if (updatedIsValidData === false) {
       setShake(true)
       setTrackFails((prevState) => prevState + 1)
+      setIsDisabled(true)
 
       setTimeout(() => {
         //reset everything
         setPopUpToggle(false)
         setShake(false)
-      }, 1100)
+        setIsDisabled(false)
+      }, 500)
     }
   }
 
@@ -213,14 +215,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
   return (
     <div>
       <div {...stylex.props(styles.base)}>
-        <div>
-          <TrackFails fails={trackFails} />
-          {/* {isValidData && (
-            <p {...stylex.props(styles.text2)}>
-              Whoa You did it! Come back tomorrow for a new challenge!
-            </p>
-          )} */}
-        </div>
+        <TrackFails fails={trackFails} />
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
             return (
@@ -239,7 +234,6 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
                       }}
                       inputRef={inputRefs[arrayIndex][itemIndex]}
                       isShaking={shake}
-                      // sendFnToParent={shakeHandler}
                     />
                   )
                 })}
@@ -253,6 +247,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
               onClickFn={() => {
                 clearAllInput()
               }}
+              disabled={isDisabled}
             />
             <Button
               text="submit"
@@ -260,6 +255,7 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
               onClickFn={() => {
                 submitHandler()
               }}
+              disabled={isDisabled}
             />
           </div>
         </div>

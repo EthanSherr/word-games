@@ -1,13 +1,12 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
     dependencies:
+      framer-motion:
+        specifier: ^11.18.0
+        version: 11.18.0(react@18.3.1)
       luxon:
         specifier: ^3.5.0
         version: 3.5.0
@@ -47,7 +46,7 @@ importers:
         version: 11.0.0-rc.621(@trpc/server@11.0.0-rc.621)
       '@trpc/react-query':
         specifier: 11.0.0-rc.621
-        version: 11.0.0-rc.621(@tanstack/react-query@5.60.5)(@trpc/client@11.0.0-rc.621)(@trpc/server@11.0.0-rc.621)(react-dom@18.3.1)(react@18.3.1)
+        version: 11.0.0-rc.621(@tanstack/react-query@5.60.5)(@trpc/client@11.0.0-rc.621)(@trpc/server@11.0.0-rc.621)(react@18.3.1)
       '@trpc/server':
         specifier: 11.0.0-rc.621
         version: 11.0.0-rc.621
@@ -1105,7 +1104,7 @@ packages:
       '@trpc/server': 11.0.0-rc.621
     dev: true
 
-  /@trpc/react-query@11.0.0-rc.621(@tanstack/react-query@5.60.5)(@trpc/client@11.0.0-rc.621)(@trpc/server@11.0.0-rc.621)(react-dom@18.3.1)(react@18.3.1):
+  /@trpc/react-query@11.0.0-rc.621(@tanstack/react-query@5.60.5)(@trpc/client@11.0.0-rc.621)(@trpc/server@11.0.0-rc.621)(react@18.3.1):
     resolution: {integrity: sha512-JMItQtZFifKxbjPNrkNQPH//W1UnZOa+haVwO1zY9ks+dTNErp0GrV4zLeNChitIP6Q1oZZr4y4m2/yVDIEPAA==}
     peerDependencies:
       '@tanstack/react-query': ^5.59.15
@@ -1118,7 +1117,6 @@ packages:
       '@trpc/client': 11.0.0-rc.621(@trpc/server@11.0.0-rc.621)
       '@trpc/server': 11.0.0-rc.621
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
     dev: true
 
   /@trpc/server@11.0.0-rc.621:
@@ -2311,6 +2309,26 @@ packages:
       tslib: 2.8.1
     dev: false
 
+  /framer-motion@11.18.0(react@18.3.1):
+    resolution: {integrity: sha512-Vmjl5Al7XqKHzDFnVqzi1H9hzn5w4eN/bdqXTymVpU2UuMQuz9w6UPdsL9dFBeH7loBlnu4qcEXME+nvbkcIOw==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      motion-dom: 11.16.4
+      motion-utils: 11.16.0
+      react: 18.3.1
+      tslib: 2.8.1
+    dev: false
+
   /fresh@0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
     engines: {node: '>= 0.6'}
@@ -3176,6 +3194,16 @@ packages:
     hasBin: true
     dev: false
 
+  /motion-dom@11.16.4:
+    resolution: {integrity: sha512-2wuCie206pCiP2K23uvwJeci4pMFfyQKpWI0Vy6HrCTDzDCer4TsYtT7IVnuGbDeoIV37UuZiUr6SZMHEc1Vww==}
+    dependencies:
+      motion-utils: 11.16.0
+    dev: false
+
+  /motion-utils@11.16.0:
+    resolution: {integrity: sha512-ngdWPjg31rD4WGXFi0eZ00DQQqKKu04QExyv/ymlC+3k+WIgYVFbt6gS5JsFPbJODTF/r8XiE/X+SsoT9c0ocw==}
+    dev: false
+
   /motion@11.11.14(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-WABtM4t3+SQ4jQ/5TDkRsH9VD6jakGeOrnzra4tnDma0JUT21/n113yCyn889yJSq0bEJnfFphFXo0gOVRICXg==}
     peerDependencies:
@@ -3654,6 +3682,7 @@ packages:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+    dev: false
 
   /react-icons@5.3.0(react@18.3.1):
     resolution: {integrity: sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==}
@@ -3940,6 +3969,7 @@ packages:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
 
   /seedrandom@3.0.5:
     resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
@@ -4685,3 +4715,7 @@ packages:
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
