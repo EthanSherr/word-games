@@ -1,32 +1,21 @@
-import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../tokens.stylex";
-import { Button } from "./Button";
-import { ReactNode } from "react";
+import * as stylex from "@stylexjs/stylex"
+import { ReactNode } from "react"
+import { tokens } from "../tokens.stylex"
+import { Button } from "./Button"
 type PopUpProps = {
   // popUpToggleHandler: () => void;
   // text: string;
-  children: ReactNode;
-};
+  children: ReactNode
+}
 export const PopUp = ({ children }: PopUpProps) => {
-  return (
-    <div {...stylex.props(styles.base)}>
-      {children}
-
-      {/* <div {...stylex.props(styles.centerDiv)}>
-        <div {...stylex.props(styles.text)}>{text}</div> 
-        <Button text="Okay" onClickFn={popUpToggleHandler} />
-      </div> */}
-    </div>
-  );
-};
+  return <div {...stylex.props(styles.base)}>{children}</div>
+}
 
 const styles = stylex.create({
   base: {
-    backgroundColor: "rgba(255,140,92,0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
     zIndex: "1",
     position: "absolute",
-    // height: "100vh",
-    // width: "100vw",
     height: "100%",
     width: "100%",
     left: "0",
@@ -36,4 +25,4 @@ const styles = stylex.create({
     justifyContent: "center",
     alignItems: "center",
   },
-});
+})

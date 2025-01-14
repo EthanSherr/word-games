@@ -43,20 +43,20 @@ const styles = stylex.create({
     "@media (max-width: 480px)": {
       border: "2px solid black",
       borderRadius: ".5rem",
-      fontSize: "2rem",
+      fontSize: "1.5rem",
       padding: "1rem",
     },
     "@media (min-width: 481px) and (max-width: 834px)": {
       border: "3px solid black",
       borderRadius: ".8rem",
-      fontSize: "2.5rem",
-      padding: "1.5rem",
+      fontSize: "2rem",
+      padding: "1.2rem",
     },
     "@media (min-width: 835px) ": {
       border: "4px solid black",
       borderRadius: "1rem",
-      fontSize: "3rem",
-      padding: "2rem",
+      fontSize: "2.5rem",
+      padding: "1.5rem",
     },
   }),
 })

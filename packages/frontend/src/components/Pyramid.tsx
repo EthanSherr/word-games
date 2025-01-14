@@ -18,9 +18,11 @@ type PyramidType = {
 export const Pyramid = ({ pyramidData }: PyramidType) => {
   const [popUpToggle, setPopUpToggle] = useState(false)
   const [dataArr, setDataArr] = useState<PyramidPrompt>(pyramidData)
-  const { mutateAsync, data: isValidData } = trpc.submitAnswer.useMutation()
+  const { mutateAsync: submitAnswer, data: isValidData } =
+    trpc.submitAnswer.useMutation()
   const [trackFails, setTrackFails] = useState(0)
   const [shake, setShake] = useState(false)
+  // const [isValidData, setIsValidData] = useState(false)
 
   const inputRefs = [
     [
@@ -135,9 +137,10 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
     console.log("submit array: ", dataArr)
     setPopUpToggle(true)
 
-    const x = await mutateAsync(dataArr)
-    console.log("is Valid data?", isValidData)
-    if (isValidData === false) {
+    const updatedIsValidData = await submitAnswer(dataArr)
+
+    console.log("is Valid data?", updatedIsValidData)
+    if (updatedIsValidData === false) {
       setShake(true)
       setTrackFails((prevState) => prevState + 1)
 
@@ -212,11 +215,11 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
       <div {...stylex.props(styles.base)}>
         <div>
           <TrackFails fails={trackFails} />
-          {isValidData && (
+          {/* {isValidData && (
             <p {...stylex.props(styles.text2)}>
               Whoa You did it! Come back tomorrow for a new challenge!
             </p>
-          )}
+          )} */}
         </div>
         <div {...stylex.props(styles.pyramid)}>
           {dataArr?.layers.map((array, arrayIndex) => {
@@ -274,11 +277,11 @@ export const Pyramid = ({ pyramidData }: PyramidType) => {
         </PopUp>
       )}
 
-      {isValidData === false && popUpToggle && (
+      {/* {isValidData === false && popUpToggle && (
         <PopUp>
           <PyramidFail />
         </PopUp>
-      )}
+      )} */}
     </div>
   )
 }

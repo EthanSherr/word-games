@@ -1,60 +1,64 @@
-import * as stylex from "@stylexjs/stylex";
-import { Button } from "./Button";
-import { tokens } from "../tokens.stylex";
-import ConfettiExplosion from "react-confetti-explosion";
-import { useState } from "react";
-import { trpc } from "../connection/TrpcQueryContextProvider";
+import * as stylex from "@stylexjs/stylex"
+import { useState } from "react"
+import ConfettiExplosion from "react-confetti-explosion"
+import { trpc } from "../connection/TrpcQueryContextProvider"
+import { tokens } from "../tokens.stylex"
+import { Button } from "./Button"
 
 type PyramidSuccessProps = {
-  onClickFn: () => void;
-};
+  onClickFn: () => void
+}
 export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
-  const [togglePopUp, setTogglePopUp] = useState(false);
-  const { mutateAsync, isSuccess } = trpc.notifyUserDaily.useMutation();
-  const [email, setEmail] = useState({ email: "", notify: true });
-  const [emailError, setEmailError] = useState(false);
+  const [togglePopUpThanks, setTogglePopUpThanks] = useState(false)
+  const { mutateAsync, isSuccess } = trpc.notifyUserDaily.useMutation()
+  const [email, setEmail] = useState({ email: "", notify: true })
+  const [emailError, setEmailError] = useState(false)
 
   const notifyHandler = async () => {
     if (isValidEmail()) {
-      const result = await mutateAsync(email);
-      setTogglePopUp(true);
-      // console.log("Mutate Async Result: ", result);
+      const result = await mutateAsync(email)
+      setTogglePopUpThanks(true)
     } else {
-      setEmailError(true);
+      setEmailError(true)
     }
-  };
+
+    setTimeout(() => {
+      //reset everything
+      onClickFn()
+    }, 3000)
+  }
 
   const isValidEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email.email);
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email.email)
+  }
 
   const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (emailError) {
-      setEmailError(!emailError);
+      setEmailError(!emailError)
     }
     setEmail((prevState) => ({
       ...prevState,
       email: e.target.value.toLowerCase(),
-    }));
-  };
+    }))
+  }
 
   // console.log("IS successs: ", isSuccess);
   return (
-    <div>
-      <div {...stylex.props(styles.base)}>
-        <ConfettiExplosion
-          zIndex={1}
-          particleCount={250}
-          duration={3000}
-          force={0.8}
-          // height="100%"
-          width={1500}
-        />
-        {!togglePopUp && (
+    <div {...stylex.props(styles.base)}>
+      <ConfettiExplosion
+        zIndex={1}
+        particleCount={250}
+        duration={3000}
+        force={0.8}
+        // height="100%"
+        width={1500}
+      />
+      <div>
+        {!togglePopUpThanks && (
           <div>
             <div {...stylex.props(styles.textDiv)}>
-              <h2>🎉 Congratulations on solving the puzzle!</h2>
+              <h2>🎉 Congratulations!</h2>
 
               <p>
                 Would you like to sign up for our daily email with puzzles,
@@ -66,9 +70,13 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
                   placeholder="yourname@email.com"
                   onChange={emailHandler}
                 ></input>
-                {emailError && (
-                  <p {...stylex.props(styles.error)}>Incorrect Email Address</p>
-                )}
+                <div style={{ height: "1.5rem" }}>
+                  {emailError && (
+                    <p {...stylex.props(styles.error)}>
+                      Incorrect Email Address
+                    </p>
+                  )}{" "}
+                </div>
               </div>
             </div>
             <div {...stylex.props(styles.buttonContainerDiv)}>
@@ -84,7 +92,7 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
                 <Button
                   text="Yes!"
                   onClickFn={() => {
-                    notifyHandler();
+                    notifyHandler()
                   }}
                   bgColor={tokens.green}
                 />
@@ -94,10 +102,11 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
         )}
       </div>
       <div>
-        {togglePopUp && (
+        {togglePopUpThanks && (
           <div {...stylex.props(styles.thankDiv)}>
             <div {...stylex.props(styles.textDiv)}>
-              Thank you for signing up! See you tomorrow!
+              <p>Thank you for signing up!</p>
+              <p>See you tomorrow!</p>
             </div>
             <div {...stylex.props(styles.buttonContainerDiv, styles.buttonDiv)}>
               <Button
@@ -110,39 +119,57 @@ export const PyramidSuccess = ({ onClickFn }: PyramidSuccessProps) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const styles = stylex.create({
   base: {
-    backgroundColor: tokens.offwhite,
-    maxWidth: "90%",
-    maxHeight: "50rem",
-    borderRadius: "1rem",
-    border: "2px solid black",
-    boxShadow: "5px 8px",
+    // backgroundColor: tokens.offwhite,
+    backgroundColor: "white",
+    // width: "100%",
+    // height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifySelf: "center",
+    // width: "100%",
+
+    "@media (max-width: 480px)": {
+      border: "2px solid black",
+      borderRadius: ".5rem",
+      fontSize: "1rem",
+      padding: "1.5rem",
+      // width: "calc(100% - 3rem)",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      border: "3px solid black",
+      borderRadius: ".8rem",
+      fontSize: "1.5rem",
+      padding: "3rem",
+    },
+    "@media (min-width: 835px) ": {
+      border: "4px solid black",
+      borderRadius: "1rem",
+      fontSize: "2rem",
+      padding: "4.5rem",
+    },
   },
   confettiDiv: {
-    backgroundColor: tokens.yellow,
     position: "relative",
     width: "100%",
-    height: "300px",
+    // height: "300px",
     overflow: "hidden",
   },
   confettiExplosionDiv: {
     height: "100%",
-    backgroundColor: "pink",
   },
   textDiv: {
+    width: "100%",
+    // backgroundColor: "pink",
     alignContent: "center",
-    minWidth: "15rem",
-    fontSize: "1rem",
-    margin: "1.5rem",
-    marginBottom: "1rem",
+    // fontSize: "1rem",
+    // margin: "1.5rem",
+    marginBottom: "2rem",
     alignItems: "center",
     textAlign: "center",
   },
@@ -150,55 +177,96 @@ const styles = stylex.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: "2rem",
-    margin: "1rem",
-    alignItems: "center",
     justifyContent: "center",
+    "@media (max-width: 480px)": {
+      gap: "1rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      gap: "1.5rem",
+    },
+    "@media (min-width: 835px) ": {
+      gap: "2rem",
+    },
   },
-  buttonDiv: {
-    height: "3rem",
-    width: "40%",
-    diplay: "flex",
-    flexDirection: "column",
-    justifyItems: "center",
-    alignItems: "center",
+  buttonDiv: { width: "100%" },
+  inputContainer: {
+    width: "100%",
+    // backgroundColor: "red",
+    display: "flex",
 
-    fontSize: ".8rem",
+    // alignContent: "center",
+    // justifyContent: "center",
   },
   input: {
     backgroundColor: tokens.pink,
     zoom: "disable",
-    width: "60%",
-    minWidth: "18rem",
-    padding: ".5rem",
-
+    width: "100%",
     color: "black",
     textTransform: "uppercase",
     borderRadius: ".5rem",
     textAlign: "center",
     border: "2px solid black",
+    "@media (max-width: 480px)": {
+      border: "2px solid black",
+      borderRadius: ".5rem",
+      fontSize: "1rem",
+      padding: "1rem",
+
+      // paddingTop: "1rem",
+      // paddingBottom: "1rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      border: "3px solid black",
+      borderRadius: ".8rem",
+      fontSize: "1.5rem",
+      padding: "1.2rem",
+      // paddingTop: "1.2rem",
+      // paddingBottom: "1.2rem",
+    },
+    "@media (min-width: 835px) ": {
+      border: "4px solid black",
+      borderRadius: "1rem",
+      fontSize: "2rem",
+      padding: "1.5rem",
+      // paddingTop: "1.5rem",
+      // paddingBottom: "1.5rem",
+    },
   },
   thankDiv: {
-    backgroundColor: tokens.offwhite,
-
-    maxWidth: "90%",
-    maxHeight: "50rem",
-
-    borderRadius: "1rem",
-    border: "2px solid black",
-    boxShadow: "5px 8px",
+    "@media (max-width: 480px)": {
+      height: "14rem",
+      gap: "1rem",
+      width: "20rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      height: "18rem",
+      gap: "1.5rem",
+      width: "30rem",
+    },
+    "@media (min-width: 835px) ": {
+      height: "23rem",
+      gap: "2rem",
+      width: "45rem",
+    },
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifySelf: "center",
-  },
-  inputContainer: {
-    height: "3.2rem",
+    alignContent: "center",
+    justifyContent: "center",
   },
   error: {
     color: "red",
-    fontSize: ".8rem",
     margin: 0,
+    marginTop: ".2rem",
+    "@media (max-width: 480px)": {
+      fontSize: ".75rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      fontSize: "1rem",
+    },
+    "@media (min-width: 835px) ": {
+      fontSize: "1.25rem",
+    },
   },
-});
+})
