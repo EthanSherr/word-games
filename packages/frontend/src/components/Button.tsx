@@ -1,14 +1,14 @@
-import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../tokens.stylex";
-import { motion } from "motion/react";
+import * as stylex from "@stylexjs/stylex"
+import { motion } from "motion/react"
+import { tokens } from "../tokens.stylex"
 
 type ButtonProps = {
-  text: string;
-  type?: "button" | "reset" | "submit";
-  onClickFn: () => void;
-  width?: string;
-  bgColor?: string;
-};
+  text: string
+  type?: "button" | "reset" | "submit"
+  onClickFn: () => void
+  width?: string
+  bgColor?: string
+}
 export const Button = ({
   text,
   type,
@@ -19,37 +19,44 @@ export const Button = ({
   return (
     <motion.button
       {...stylex.props(styles.base({ width, bgColor }))}
-      whileTap={{ scale: 0.9 }}
-      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.85 }}
+      whileHover={{ scale: 0.95 }}
       onClick={onClickFn}
     >
       {text}
     </motion.button>
-  );
-};
+  )
+}
 
 const styles = stylex.create({
   base: (props) => ({
-    // backgroundColor: props.text === "submit" ? tokens.green : tokens.yellow,
     backgroundColor: props.bgColor,
-
-    minWidth: "10rem",
-    // width: "80%",
-    width: props.width && props.width.length > 0 ? props.width : "80%",
-    maxWidth: "40rem",
-    fontSize: "2em",
-    // height: "5rem",
-    maxHeight: "5rem",
     height: "100%",
     textTransform: "uppercase",
-    borderRadius: ".5rem",
-    padding: "1rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     color: "black",
     cursor: "pointer",
-    border: "2px solid black",
     boxShadow: "2px 5px",
+    width: "100%",
+    "@media (max-width: 480px)": {
+      border: "2px solid black",
+      borderRadius: ".5rem",
+      fontSize: "2rem",
+      padding: "1rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      border: "3px solid black",
+      borderRadius: ".8rem",
+      fontSize: "2.5rem",
+      padding: "1.5rem",
+    },
+    "@media (min-width: 835px) ": {
+      border: "4px solid black",
+      borderRadius: "1rem",
+      fontSize: "3rem",
+      padding: "2rem",
+    },
   }),
-});
+})

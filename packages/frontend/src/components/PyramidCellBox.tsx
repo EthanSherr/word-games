@@ -1,18 +1,18 @@
-import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../tokens.stylex";
-import { motion } from "motion/react";
+import * as stylex from "@stylexjs/stylex"
+import { motion } from "motion/react"
+import { tokens } from "../tokens.stylex"
 
 type PyramidCellBoxProps = {
-  editable: boolean;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  editable: boolean
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
-  isShaking: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  inputRef: React.RefObject<HTMLInputElement>
+  isShaking: boolean
   // sendFnToParent: (fn: () => void) => void;
   // shakeHandler: () => {};
-};
+}
 
 export const PyramidCellBox = ({
   editable,
@@ -23,9 +23,9 @@ export const PyramidCellBox = ({
   // sendFnToParent,
   isShaking,
 }: PyramidCellBoxProps) => {
-  const randomX = Math.floor(Math.random() * 10) + 1;
-  const randomY = Math.floor(Math.random() * 10) + 1;
-  const randomRotate = Math.floor(Math.random() * 50) + 1;
+  const randomX = Math.floor(Math.random() * 10) + 1
+  const randomY = Math.floor(Math.random() * 10) + 1
+  const randomRotate = Math.floor(Math.random() * 50) + 1
 
   // console.log("random Rotate: ", randomRotate);
   const shakeAnimation = {
@@ -48,14 +48,13 @@ export const PyramidCellBox = ({
       },
     },
     // initial: { x: 0 },
-  };
+  }
 
   return (
     <motion.input
       animate={isShaking && editable ? "shake" : "initial"}
       variants={shakeAnimation}
       ref={inputRef}
-      // ref={divRef}
       {...stylex.props(styles.input(editable))}
       disabled={!editable}
       type="text"
@@ -65,24 +64,41 @@ export const PyramidCellBox = ({
       maxLength={1}
       placeholder="_"
       onFocus={(event) => {
-        event.target.select();
+        event.target.select()
       }}
     ></motion.input>
-  );
-};
+  )
+}
 
 const styles = stylex.create({
   input: (editable) => ({
     backgroundColor: editable === true ? tokens.green : tokens.pink,
     zoom: "disable",
-    fontSize: "2rem",
-    width: "4rem",
-    height: "4rem",
-    color: "black",
-    textTransform: "uppercase",
-    border: "2px solid black",
-    borderRadius: ".5rem",
 
+    "@media (max-width: 480px)": {
+      width: "4rem",
+      height: "4rem",
+      border: "2px solid black",
+      borderRadius: ".5rem",
+      fontSize: "2rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      width: "6rem",
+      height: "6rem",
+      border: "3px solid black",
+      borderRadius: ".8rem",
+      fontSize: "2.5rem",
+    },
+    "@media (min-width: 835px) ": {
+      width: "8rem",
+      height: "8rem",
+      border: "4px solid black",
+      borderRadius: "1rem",
+      fontSize: "3rem",
+    },
+
+    // color: "black",
+    textTransform: "uppercase",
     textAlign: "center",
   }),
-});
+})

@@ -1,74 +1,54 @@
 // src/App.tsx
-import React from "react";
-import "./index.css";
-import { Pyramid } from "./components/Pyramid";
-import { trpc } from "./connection/TrpcQueryContextProvider";
-import * as stylex from "@stylexjs/stylex";
-import { tokens } from "./tokens.stylex";
+import * as stylex from "@stylexjs/stylex"
+import React from "react"
+import { Pyramid } from "./components/Pyramid"
+import { trpc } from "./connection/TrpcQueryContextProvider"
+import "./index.css"
+import { tokens } from "./tokens.stylex"
 
 const App: React.FC = () => {
-  const { data, isLoading } = trpc.getPyramidOfTheDay.useQuery();
-
-  // const [trpcError, pyramidDataOfTheDay] = data ?? [];
-  // const data = {
-  //   id: "test",
-  //   layers: [
-  //     [
-  //       { character: "P", editable: false },
-  //       { character: "A", editable: false },
-  //       { character: "S", editable: false },
-  //       { character: "T", editable: false },
-  //       { character: "A", editable: false },
-  //     ],
-  //     [
-  //       { character: "", editable: true },
-  //       { character: "", editable: true },
-  //       { character: "A", editable: false },
-  //       { character: "", editable: true },
-  //     ],
-  //     [
-  //       { character: "A", editable: false },
-  //       { character: "", editable: true },
-
-  //       { character: "", editable: true },
-  //     ],
-  //     [
-  //       { character: "", editable: true },
-  //       { character: "", editable: true },
-  //     ],
-  //     [{ character: "A", editable: false }],
-  //   ],
-  // };
+  const { data, isLoading } = trpc.getPyramidOfTheDay.useQuery()
 
   return (
-    <div>
+    <div {...stylex.props(styles.base)}>
       <div {...stylex.props(styles.logo)}>WORD PYRAMID</div>
       <div {...stylex.props(styles.pyramidDiv)}>
-        {" "}
         {data ? <Pyramid pyramidData={data} /> : "loading"}
-      </div>{" "}
-      {/* <Pyramid pyramidData={data} /> */}
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 
 const styles = stylex.create({
+  base: {
+    // backgroundColor: "lightgray",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    justifyContent: "center",
+    alignContent: "center",
+    marginLeft: "1rem",
+    marginRight: "1rem",
+  },
   logo: {
+    marginTop: "2rem",
     width: "100%",
-    fontSize: "3.5rem",
     fontWeight: "800",
     textAlign: "center",
-    marginTop: "2rem",
-    minWidth: "225px",
-    alignSelf: "center",
-    height: "3.5rem",
-    // backgroundColor: "pink",
-    // display: 'flex'
+    "@media (max-width: 480px)": {
+      fontSize: "3rem",
+    },
+    "@media (min-width: 481px) and (max-width: 834px)": {
+      fontSize: "4rem",
+    },
+    "@media (min-width: 835px) ": {
+      fontSize: "5rem",
+    },
   },
   pyramidDiv: {
-    // height: "calc(100% - 6.5rem) ",
     // backgroundColor: "pink",
+    width: "100%",
   },
-});
+})
