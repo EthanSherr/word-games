@@ -29,7 +29,7 @@ export const Button = ({
         transition: { duration: 0.2 },
         boxShadow: "0px 0px",
       }}
-      whileHover={{ boxShadow: "5px 5px #888888" }}
+      whileHover={{ boxShadow: "5px 5px rgb(83, 83, 83)" }}
       onClick={onClickFn}
       disabled={disabled}
     >
