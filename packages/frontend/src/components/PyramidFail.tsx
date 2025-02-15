@@ -1,41 +1,29 @@
-import * as stylex from "@stylexjs/stylex";
-import { tokens } from "../tokens.stylex";
-import { Button } from "./Button";
-import { motion } from "motion/react";
-import { HiEmojiSad } from "react-icons/hi";
+import * as stylex from "@stylexjs/stylex"
+import { motion } from "motion/react"
+import { HiEmojiSad } from "react-icons/hi"
+import { tokens } from "../tokens.stylex"
+import { Button } from "./Button"
 
 type PyramidFailProps = {
-  onClickFn?: () => void;
-};
-export const PyramidFail = ({ onClickFn }: PyramidFailProps) => {
+  onAnimationDone?: () => void
+}
+export const PyramidFail = ({ onAnimationDone }: PyramidFailProps) => {
   return (
-    // <div {...stylex.props(styles.base)}>
-    //   <div {...stylex.props(styles.emojiDiv)}>😰</div>
-    //   <div {...stylex.props(styles.textDiv)}>Not quite! try again?</div>
-    //   <div {...stylex.props(styles.buttonContainerDiv, styles.buttonDiv)}>
-    //     <Button
-    //       text="Okay"
-    //       onClickFn={() => {
-    //         onClickFn();
-    //       }}
-    //     />
-    //   </div>
-
-    // </div>
     <motion.div
       {...stylex.props(styles.motionDiv)}
       // animate={{ x: 500, y: 500, opacity: [1, 0] }}
       animate={{ scale: 0, x: 0, y: "-50%" }}
       // animate={animate ?? { scale: 0, x: 0, y: "-40%" }}
       transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
+      onAnimationComplete={onAnimationDone}
     >
       {/* <div {...stylex.props(styles.failEmoji)}>😰</div> */}
       <HiEmojiSad {...stylex.props(styles.failEmoji)} />
 
       <div {...stylex.props(styles.failText)}>Try Again</div>
     </motion.div>
-  );
-};
+  )
+}
 
 const styles = stylex.create({
   base: {
@@ -97,6 +85,7 @@ const styles = stylex.create({
     // borderRadius: "1rem",
     // backgroundColor: tokens.orange,
   },
+
   failEmoji: { margin: "0", fontSize: "8em" },
   failText: {
     fontSize: "2em",
@@ -107,4 +96,4 @@ const styles = stylex.create({
     borderRadius: "1rem",
     border: "2px solid black",
   },
-});
+})
